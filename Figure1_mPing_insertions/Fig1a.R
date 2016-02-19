@@ -2,7 +2,7 @@ pdf("Fig1a.pdf", height=7, width=6)
 par(mfrow=c(1,2))
 
 ##type of mping insertion, parental, shared, unique
-x <- read.table("RIL230_RelocaTEi.CombinedGFF.characterized.clean.type.summary", row.names=1)
+x <- read.table("RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.type.summary", row.names=1)
 x <- t(x)
 data <- rbind(x[,1]/sum(x[1,]), x[,2]/sum(x[1,]), x[,3]/sum(x[1,]))
 rownames(data) <- colnames(x)
@@ -22,7 +22,7 @@ text(1.11, -0.082, cex=1.2, 'mPing', font=3, xpd=TRUE)
 text(0.6, -0.13, cex=1.2, '(n = 13404)', xpd=TRUE)
 
 ##class of mping insertion, homozygous, heterozygous
-x <- read.table("RIL230_RelocaTEi.CombinedGFF.characterized.clean.class.summary", row.names=1, header=T)
+x <- read.table("RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.class.summary", row.names=1, header=T)
 x[,2] <- x[,2] + x[,3]
 x[,3] <- NULL
 x <- t(x)

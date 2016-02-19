@@ -170,10 +170,10 @@ def main():
         count = len(mping_ovlp_rils[mping].keys())
         if mping_ovlp_heg4.has_key(mping):
             print >> ofile1, '%s\tParental\t%s' %(mping, ','.join(map(str, mping_ovlp_rils[mping].keys())))
-            print >> ofile, '%s\t%s\t%s\t%s\t%s\t%s\t%s\tParental' %(chro, start, end, mping, '+', count, float(count)/230)
+            print >> ofile, '%s\t%s\t%s\t%s\t%s\t%s\t%s\tParental' %(chro, start, end, mping, '+', count, float(count)/272)
         else:
             print >> ofile1, '%s\tRIL\t%s' %(mping, ','.join(map(str, mping_ovlp_rils[mping].keys())))
-            print >> ofile, '%s\t%s\t%s\t%s\t%s\t%s\t%s\tRIL' %(chro, start, end, mping, '+', count, float(count)/230)
+            print >> ofile, '%s\t%s\t%s\t%s\t%s\t%s\t%s\tRIL' %(chro, start, end, mping, '+', count, float(count)/272)
     ofile.close()
     ofile1.close()
 

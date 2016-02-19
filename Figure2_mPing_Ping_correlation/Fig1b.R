@@ -7,7 +7,7 @@ error.bar <- function(x, y, upper, lower=upper, length=0.1,...){
 
 pdf("Fig1b.pdf")
 par(mar=c(5,5,4,2))
-data =read.table("RIL230_RelocaTEi.CombinedGFF.characterized.clean.ping_number.summary.1")
+data =read.table("RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.ping_number.summary.1")
 expr = data[,2]
 std = data[,3]
 barx <- barplot(expr, col=c("cornflowerblue"), ylim=c(0,120), border=F, axis.lty=1, xlab='', ylab='')
