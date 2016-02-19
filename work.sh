@@ -60,10 +60,17 @@ python Pseudo_TEinsertion_Genome.py --repeat mPing_Ping_Pong.fa --gff RIL275_Rel
 /opt/linux/centos/7.x/x86_64/pkgs/bwa/0.7.12/bin/bwa index MSU_r7.Pseudo_mPing.fa
 /opt/linux/centos/7.x/x86_64/pkgs/bwa/0.7.12/bin/bwa index MSU_r7.Pseudo_mPing_RILs.fa
 echo "3.1.3 Mapping reads to pseudogenome"
+cd Prepare0_mPing_excision_Identification/bin
 python runRIL_bwa.py --input ../input/RILs_ALL_unmapped_mping_fastq > log 2>&1 &
 perl /rhome/cjinfeng/BigData/software/bin/qsub-pbs.pl -q js --maxjob 5 --lines 1 --interval 120 --resource nodes=1:ppn=12,walltime=100:00:00,mem=20G --convert no RIL_bwa.sh > log1 2>&1 &
 mkdir ../input/RILs_ALL_unmapped_mping_bam
 mv *.bam ../input/RILs_ALL_unmapped_mping_bam/
 mv *.bai ../input/RILs_ALL_unmapped_mping_bam/
 mv *.dupli ../input/RILs_ALL_unmapped_mping_bam/
+echo "summary mping boundary coverage"
+cd Prepare0_mPing_excision_Identification/bin
+cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_275line_correct/MPR.geno.data ../input
+cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_275line_correct/MPR.geno.data ../input
+python mPing_Boundary_Coverage.py --bam_ref ../input/RILs_ALL_bam_correct_merged --bam_pseudo ../input/RILs_ALL_unmapped_mping_bam --gff_ref ../input/HEG4.ALL.mping.non-ref.gff --gff_pseudo ../input/MSU_r7.Pseudo_mPing.gff > log 2>&1 &
+
 
