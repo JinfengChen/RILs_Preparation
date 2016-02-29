@@ -19,7 +19,7 @@ text(1.5, 0.96, cex=1.4, paste("(", x[3], ")", sep=""), col='black', xpd=TRUE)
 text(1.5, 1, cex=1.4, paste(round(data[3,1]*100), "%", sep=""), xpd=TRUE, col='black')
 text(0.3, -0.08, cex=1.2, 'Non-Ref', xpd=TRUE)
 text(1.11, -0.082, cex=1.2, 'mPing', font=3, xpd=TRUE)
-text(0.6, -0.13, cex=1.2, '(n = 13404)', xpd=TRUE)
+text(0.6, -0.13, cex=1.2, '(n = 16824)', xpd=TRUE)
 
 ##class of mping insertion, homozygous, heterozygous
 x <- read.table("RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.class.summary", row.names=1, header=T)

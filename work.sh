@@ -67,10 +67,38 @@ mkdir ../input/RILs_ALL_unmapped_mping_bam
 mv *.bam ../input/RILs_ALL_unmapped_mping_bam/
 mv *.bai ../input/RILs_ALL_unmapped_mping_bam/
 mv *.dupli ../input/RILs_ALL_unmapped_mping_bam/
-echo "summary mping boundary coverage"
+echo "3.1.4 summary mping boundary coverage"
 cd Prepare0_mPing_excision_Identification/bin
 cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_275line_correct/MPR.geno.data ../input
 cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_275line_correct/MPR.geno.data ../input
 python mPing_Boundary_Coverage.py --bam_ref ../input/RILs_ALL_bam_correct_merged --bam_pseudo ../input/RILs_ALL_unmapped_mping_bam --gff_ref ../input/HEG4.ALL.mping.non-ref.gff --gff_pseudo ../input/MSU_r7.Pseudo_mPing.gff > log 2>&1 &
+#add ping code and excision/gt status to csv
+python Ping_number_RILs.High_exicison.py --csv mPing_boundary_mPing --ping_code ../../Prepare0_mPing_calls/RIL275_RelocaTE.sofia.ping_code.table
+#summary excision from csv
+python Sum_excision_distance.py --dir mPing_boundary_mPing_GT_Ping_code --distance ../../Prepare0_mPing_distance/mPing_dist2.50Mb.list.sorted --blacklist Bam.Core.blacklist --project mPing_boundary.linked_50Mb_debug2 > log 2>&1 &
+echo "3.2 Footprint"
+mkdir Prepare0_mPing_excision_footprint
+cd Prepare0_mPing_excision_footprint
+mkdir bin
+mkdir input
+cd bin
+python footprint_events.py --input ../../Prepare0_mPing_excision_Identification/bin/mPing_boundary.linked_50Mb_debug2.mping_excision.list --blacklist ../../Prepare0_mPing_excision_Identification/bin/Bam.Core.blacklist --output Excision_newpipe_version1 > log 2>&1 &
+
+echo "3.3 Excision frequency plot"
+cd Figure4_high_exicision_loci
+ln -s ../Prepare0_mPing_excision_footprint/bin/Excision_newpipe_version1.footprint.list.txt ./
+cut -f1-2 Excision_newpipe_version1.footprint.list.txt | grep "Chr" > Excision_newpipe_version1.footprint.list.draw.txt
+cut -f2 Excision_newpipe_version1.footprint.list.draw.txt | perl ~/BigData/software/bin/numberStat.pl
+cat mping.excision_events.binomial_test.R | R --slave
+cat mping.excision_events.distr.R | R --slave
+
+echo "3.4 mPing distance"
+#need to finalize the distance, rewrite? How to get this "mPing_dist_RIL_AF0.1.50Mb.list.sorted" file? how many changes comapred to "mPing_dist2.50Mb.list.sorted"
+python Excision_Distance.py --excision1 Excision_newpipe_version1.footprint.list.txt --distance mPing_dist_RIL_AF0.1.50Mb.list.sorted --gff HEG4.ALL.mping.non-ref.AF0.1.gff --output Excision_distance.matrix_events
+
+echo "3.5 Excision and mPing distance"
+cd Figure5_high_exicision_in_proximity
+ln -s ../Prepare0_mPing_distance/Excision_distance.matrix_events.1.txt ./Excision_distance_RIL.matrix_events.1.txt
+cat Excision_distance.matrix_events.plot.R | R --slave
 
 
