@@ -94,11 +94,21 @@ cat mping.excision_events.distr.R | R --slave
 
 echo "3.4 mPing distance"
 #need to finalize the distance, rewrite? How to get this "mPing_dist_RIL_AF0.1.50Mb.list.sorted" file? how many changes comapred to "mPing_dist2.50Mb.list.sorted"
-python Excision_Distance.py --excision1 Excision_newpipe_version1.footprint.list.txt --distance mPing_dist_RIL_AF0.1.50Mb.list.sorted --gff HEG4.ALL.mping.non-ref.AF0.1.gff --output Excision_distance.matrix_events
+#HEG4 distance
+perl mPing_dist.pl --input HEG4.ALL.mping.non-ref.AF0.1.gff
+sort -k3,3n -k1,1n -k2,2n mPing_dist2.50Mb.list | uniq > mPing_dist2.50Mb.list.sorted
+#RIL distance
+perl mPing_dist.pl --input RIL275_RelocaTEi.CombinedGFF.characterized.AF0.1.gff
+sort -k3,3n -k1,1n -k2,2n mPing_dist_RIL_AF0.1.50Mb.list | uniq > mPing_dist_RIL_AF0.1.50Mb.list.sorted
+#excision distance matrix
+python Excision_Distance.py --excision1 Excision_newpipe_version1.footprint.list.txt --distance mPing_dist2.50Mb.list.sorted --gff HEG4.ALL.mping.non-ref.AF0.1.gff --output Excision_distance_HEG4.matrix_events
+python Excision_Distance.py --excision1 Excision_newpipe_version1.footprint.list.txt --distance mPing_dist_RIL_AF0.1.50Mb.list.sorted --gff HEG4.ALL.mping.non-ref.AF0.1.gff --output Excision_distance_RIL.matrix_events
+paste Excision_distance.matrix_events.1.txt Excision_distance_HEG4.matrix_events.1.txt | awk -F"\t" '$3!=$6' | awk '$2>3'| less -S
 
 echo "3.5 Excision and mPing distance"
 cd Figure5_high_exicision_in_proximity
-ln -s ../Prepare0_mPing_distance/Excision_distance.matrix_events.1.txt ./Excision_distance_RIL.matrix_events.1.txt
+ln -s ../Prepare0_mPing_distance/Excision_distance_HEG4.matrix_events.1.txt ./Excision_distance_HEG4.matrix_events.1.txt
+ln -s ../Prepare0_mPing_distance/Excision_distance_RIL.matrix_events.1.txt ./Excision_distance_RIL.matrix_events.1.txt
 cat Excision_distance.matrix_events.plot.R | R --slave
 
 
