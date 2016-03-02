@@ -19,6 +19,16 @@ python Sum_class_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_Reloca
 python Sum_type_clean.py --prefix RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean
 #generate unique hom/het mPing number according to different copy number Ping
 python Sum_Ping_mPing.py --code RIL275_RelocaTE.sofia.ping_code.table --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean
+#analysis mping copy number and read depth on ping vs. mping correlation
+cut -f2 RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt | perl ~/BigData/software/bin/numberStat.pl
+#mean=193, -10%=173 and +10%=212
+python Sum_Ping_mPing_Narrow_range.py --code RIL275_RelocaTE.sofia.ping_code.table --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.narrow_range
+awk '$2>=173 && $2<=212' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.narrow_range.txt
+python Sum_Ping_mPing_High_depth.py --code RIL275_RelocaTE.sofia.ping_code.table --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.high_depth
+python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output high_depth
+python Sum_Ping_mPing_High_depth.py --code RIL275_RelocaTE.sofia.ping_code.table --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.high_narrow --narrow
+python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output high_narrow --narrow
+
 echo "Fig1a"
 cd Figure1_mPing_insertions
 ln -s ../Prepare0_mPing_calls/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.class.summary ./
@@ -31,13 +41,17 @@ cat Fig1b.R | R --slave
 
 echo "mPing frequency"
 cd Figure3_mPing_frequency
+ln -s ../Prepare0_mPing_excision_footprint/bin/Excision_newpipe_version1.footprint.list.noPing.txt ./
 ln -s ../Prepare0_mPing_calls/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.frequency 
-grep "Parental" RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.frequency > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.frequency 
+grep "Parental" RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.frequency > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.parental.frequency 
 grep "RIL" RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.frequency > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.nonparental.frequency
 echo "frequency figure"
 cat mping.allele_frq.ALL_shared.R | R --slave
 cat mping.allele_frq.parental.R | R --slave
 cat mping.allele_frq.nonparental.R | R --slave
+python mping.excision.avg_frequency.py
+cat mping.excision.avg_frequency.R | R --slave
+
 
 echo "3 mPing excision"
 echo "3.1 Identification"
@@ -83,6 +97,8 @@ mkdir bin
 mkdir input
 cd bin
 python footprint_events.py --input ../../Prepare0_mPing_excision_Identification/bin/mPing_boundary.linked_50Mb_debug2.mping_excision.list --blacklist ../../Prepare0_mPing_excision_Identification/bin/Bam.Core.blacklist --output Excision_newpipe_version1 > log 2>&1 &
+awk '$2>=5' Excision_newpipe_version1.footprint.list.txt > Excision_newpipe_version1.footprint.high.txt
+cp Excision_newpipe_version1.footprint.list.txt Excision_newpipe_version1.footprint.list.noPing.txt
 
 echo "3.3 Excision frequency plot"
 cd Figure4_high_exicision_loci
@@ -107,8 +123,24 @@ paste Excision_distance.matrix_events.1.txt Excision_distance_HEG4.matrix_events
 
 echo "3.5 Excision and mPing distance"
 cd Figure5_high_exicision_in_proximity
+#excision vs. distance dotplot
 ln -s ../Prepare0_mPing_distance/Excision_distance_HEG4.matrix_events.1.txt ./Excision_distance_HEG4.matrix_events.1.txt
 ln -s ../Prepare0_mPing_distance/Excision_distance_RIL.matrix_events.1.txt ./Excision_distance_RIL.matrix_events.1.txt
 cat Excision_distance.matrix_events.plot.R | R --slave
+#high excision mPing vs. 413 parental mPing
+python Excision_Distance_Boxplot.py --highexcision Excision_newpipe_version1.footprint.high.txt --distance mPing_dist_RIL_AF0.1.50Mb.list.sorted --gff HEG4.ALL.mping.non-ref.AF0.1.gff --output Excision_Events_distance.boxplot
+cat Excision_Events_distance.boxplot.R | R --slave
 
+echo "3.6 Excision and mPing frequency"
+mkdir Figure4_high_exicision_mping_frequency 
+ln -s ../Prepare0_mPing_excision_footprint/bin/Excision_newpipe_version1.footprint.list.noPing.txt ./
+ln -s ../Prepare0_mPing_calls/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.frequency ./
+grep "Parental" RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.frequency > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.parental.frequency
+grep -v "Parental" RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.frequency > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.nonparental.frequency
+
+echo "3.7 Excision and Ping copy number"
+mkdir Figure4_high_exicision_ping_cor 
+python Excision_Number_Ping.py --excision Excision_newpipe_version1.footprint.list.noPing.rils.txt --ping RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.narrow_range.txt --output RIL272.RIL_mPing_Ping_Excision.narrow_range.table.txt
+python Excision_Number_Ping.py --excision Excision_newpipe_version1.footprint.list.noPing.rils.txt --ping RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output RIL272.RIL_mPing_Ping_Excision.table.txt
+cat ping_number_clean_excision_cor_plot.R | R --slave
 
