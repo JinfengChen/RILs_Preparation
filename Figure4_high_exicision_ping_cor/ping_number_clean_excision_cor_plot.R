@@ -93,16 +93,16 @@ print("Ping vs Excision, RIL272_narrow_range")
 cor.test(x_n[,9], x_n[,11])
 
 par(mfrow=c(2,2))
-plot_correlation_merged_parental_mping(x[,2], x[,11], '230 RILs')
+plot_correlation_merged_parental_mping(x[,2], x[,11], '272 RILs')
 plot_correlation_merged(x[,9], x[,11], '272 RILs')
-plot_correlation_merged_parental_mping(x_n[,2], x_n[,11], '126 narrow range mPing RILs')
-plot_correlation_merged(x_n[,9], x_n[,11], '126 narrow range mPing RILs')
+plot_correlation_merged_parental_mping(x_n[,2], x_n[,11], '123 narrow range mPing RILs')
+plot_correlation_merged(x_n[,9], x_n[,11], '123 narrow range mPing RILs')
 
 par(mfrow=c(1,1))
 plot_correlation_merged_parental_mping(x[,2], x[,11], 'Parental mPing Copy Number', 'Excision Number', '272 RILs')
 plot_correlation_merged(x[,9], x[,11], 'Ping Copy Number', 'Excision Number', '272 RILs')
-plot_correlation_merged_parental_mping(x_n[,2], x_n[,11], 'Parental mPing Copy Number', 'Excision Number', '126 narrow range mPing RILs')
-plot_correlation_merged(x_n[,9], x_n[,11], 'Ping Copy Number', 'Excision Number', '126 narrow range mPing RILs')
+plot_correlation_merged_parental_mping(x_n[,2], x_n[,11], 'Parental mPing Copy Number', 'Excision Number', '123 narrow range mPing RILs')
+plot_correlation_merged(x_n[,9], x_n[,11], 'Ping Copy Number', 'Excision Number', '123 narrow range mPing RILs')
 
 #parental mPing vs unique homozygous mPing given same number of ping
 #default

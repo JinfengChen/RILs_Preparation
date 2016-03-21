@@ -7,7 +7,7 @@ xx0 <- hist(f,breaks=brk, ylab="Frequency", xlab="Excisions", col="steelblue2", 
 y <- xx0$counts
 x <- xx0$mids
 
-xx <- barplot(y,beside=TRUE,ylab="Number of mPing loci (n=180)",cex.lab=1.2, cex.names=1.2, cex.axis=1.2,border=FALSE,axes=FALSE,ylim=c(0,120),col="steelblue2")
+xx <- barplot(y,beside=TRUE,ylab="Number of mPing loci (n=178)",cex.lab=1.2, cex.names=1.2, cex.axis=1.2,border=FALSE,axes=FALSE,ylim=c(0,120),col="steelblue2")
 
 b <- 220
 

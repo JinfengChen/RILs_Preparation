@@ -1,0 +1,16 @@
+
+pdf("mping_TSD.pdf")
+par(mar=c(6,4,4,2), cex=1.2)
+dist <- read.table('mping_TSD.profile.sum')
+dist <- subset(dist, V1<=2500 & V1>=500)
+dist_sim <- read.table('mping_TSD.simulation.profile.sum')
+dist_sim <- subset(dist_sim, V1<=2500 & V1>=500)
+plot(rev(dist[,3]/1000000), type='l', pch= 1,lwd = 2 , col="aquamarine3", xaxt='n', frame.plot = FALSE, ylim=c(10000/1000000,25000/1000000), ylab="Normalized DNase reads", xlab="")
+lines(rev((dist_sim[,2]*10/1000000)-0.005), type='b',pch= 20, cex=0.2,lwd = 2 , col="dim gray")
+#error.bar(1:length(dist[,2]), rev(dist[,2]), rev(dist[,3]), rev(dist[,3]), 'dim gray')
+axis(1,seq(0, 2000, by=200),line=0, labels=rep("",11))
+text(seq(0, 2000, by=200), rep(0.008, 11), cex=1, offset=2,labels=seq(-1, 1, by=0.2), srt=0,xpd=TRUE)
+mtext("Distance to TSD (kb)", side=1, cex=1.2, at=1000, line=3)
+legend('topright', bty='n', border='NA', lty= c(1,2), pch = c(1,20), cex=1 , lwd = 2 ,col=c("aquamarine3", "dim gray"), c("Unique", "Control"))
+dev.off()
+

@@ -102,8 +102,8 @@ cp Excision_newpipe_version1.footprint.list.txt Excision_newpipe_version1.footpr
 
 echo "3.3 Excision frequency plot"
 cd Figure4_high_exicision_loci
-ln -s ../Prepare0_mPing_excision_footprint/bin/Excision_newpipe_version1.footprint.list.txt ./
-cut -f1-2 Excision_newpipe_version1.footprint.list.txt | grep "Chr" > Excision_newpipe_version1.footprint.list.draw.txt
+ln -s ../Prepare0_mPing_excision_footprint/bin/Excision_newpipe_version1.footprint.list.noPing.txt ./
+cut -f1-2 Excision_newpipe_version1.footprint.list.noPing.txt | grep "Chr" > Excision_newpipe_version1.footprint.list.draw.txt
 cut -f2 Excision_newpipe_version1.footprint.list.draw.txt | perl ~/BigData/software/bin/numberStat.pl
 cat mping.excision_events.binomial_test.R | R --slave
 cat mping.excision_events.distr.R | R --slave
@@ -130,6 +130,8 @@ cat Excision_distance.matrix_events.plot.R | R --slave
 #high excision mPing vs. 413 parental mPing
 python Excision_Distance_Boxplot.py --highexcision Excision_newpipe_version1.footprint.high.txt --distance mPing_dist_RIL_AF0.1.50Mb.list.sorted --gff HEG4.ALL.mping.non-ref.AF0.1.gff --output Excision_Events_distance.boxplot
 cat Excision_Events_distance.boxplot.R | R --slave
+#high excision distance
+python High_excision_distance.py --input 1 > Excision_newpipe_version1.footprint.high.distance.txt
 
 echo "3.6 Excision and mPing frequency"
 mkdir Figure4_high_exicision_mping_frequency 
@@ -143,4 +145,77 @@ mkdir Figure4_high_exicision_ping_cor
 python Excision_Number_Ping.py --excision Excision_newpipe_version1.footprint.list.noPing.rils.txt --ping RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.narrow_range.txt --output RIL272.RIL_mPing_Ping_Excision.narrow_range.table.txt
 python Excision_Number_Ping.py --excision Excision_newpipe_version1.footprint.list.noPing.rils.txt --ping RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output RIL272.RIL_mPing_Ping_Excision.table.txt
 cat ping_number_clean_excision_cor_plot.R | R --slave
+
+echo "3.8" High excision associated genes
+mkdir Prepare0_mPing_excision_genes
+cd Prepare0_mPing_excision_genes 
+python High_excision_asso_genes.py --input 1 > Excision_newpipe_version1.footprint.high.associated_gene.txt
+
+echo "4. mPing distribution"
+mkdir Figure7_Circos 
+ln -s ../Prepare0_mPing_calls/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.unique_mPing.gff ./
+grep "hom" ../Prepare0_mPing_calls/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.unique_mPing.gff > mPing_gff/RIL.gff
+grep -e "het" -e "som" ../Prepare0_mPing_calls/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.unique_mPing.gff > mPing_gff/Somatic.gff
+cp ~/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Figures/Fig2_Distribution/mPing_gff/Strains.gff mPing_gff/
+cp ~/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Figures/Fig2_Distribution/mPing_gff/Simulate0001.gff mPing_gff/
+python /rhome/cjinfeng/BigData/00.RD/Circos/bin/scripts/distri_data_pre_gff.py --head MSU7.circos.head --input mPing.gff.RelocaTE2.list
+cp ~/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Figures/Fig2_Distribution/mPing_Distribution_Circos/OpenChromatin.gff.list ./
+python /rhome/cjinfeng/BigData/00.RD/Circos/bin/scripts/distri_data_pre_gff.py --head MSU7.circos.head --input OpenChromatin.gff.list
+
+#preparing mping distribution around gene
+mkdir Figure7_mPing_distribution_pre Figure7_mPing_distribution_pre/bin Figure7_mPing_distribution_pre/input
+ln -s ../../Figure7_Circos/mPing_gff/ ./
+ln -s ~/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Figures/Fig2_Distribution/mPing_gff/MSU_r7.all.final.* mPing_gff/ 
+#Somatic
+bedtools intersect -a ./mPing_gff/Somatic.gff -b ./mPing_gff/MSU_r7.all.final.full.utr.gff3 -wao > Somatic.intersect
+bedtools closest -a ./mPing_gff/Somatic.gff -b ./mPing_gff/MSU_r7.all.final.mRNA.gff -d > Somatic.mRNA.intersect
+python mPing_position.py --input Somatic.intersect --mrna Somatic.mRNA.intersect
+python mPing_intron.py --input Somatic.intersect
+python mPing_intergenic.py --input Somatic.mRNA.intersect
+python mPing_position_2kb.py --input Somatic.intersect --mrna Somatic.mRNA.intersect
+#RIL
+bedtools intersect -a ./mPing_gff/RIL.gff -b ./mPing_gff/MSU_r7.all.final.full.utr.gff3 -wao > RIL.intersect
+bedtools closest -a ./mPing_gff/RIL.gff -b ./mPing_gff/MSU_r7.all.final.mRNA.gff -d > RIL.mRNA.intersect
+python mPing_position.py --input RIL.intersect --mrna RIL.mRNA.intersect
+python mPing_position_2kb.py --input RIL.intersect --mrna RIL.mRNA.intersect
+python mPing_intron.py --input RIL.intersect
+python mPing_intergenic.py --input RIL.mRNA.intersect
+#Strain
+bedtools intersect -a ./mPing_gff/Strains.gff -b ./mPing_gff/MSU_r7.all.final.full.utr.gff3 -wao > Strains.intersect
+bedtools closest -a ./mPing_gff/Strains.gff -b ./mPing_gff/MSU_r7.all.final.mRNA.gff -d > Strains.mRNA.intersect
+python mPing_position.py --input Strains.intersect --mrna Strains.mRNA.intersect
+python mPing_position_2kb.py --input Strains.intersect --mrna Strains.mRNA.intersect
+python mPing_intron.py --input Strains.intersect 
+python mPing_intergenic.py --input Strains.mRNA.intersect 
+#Simulation
+bedtools intersect -a ./mPing_gff/Simulate0001.gff -b ./mPing_gff/MSU_r7.all.final.full.utr.gff3 -wao > Simulation.intersect
+bedtools closest -a ./mPing_gff/Simulate0001.gff -b ./mPing_gff/MSU_r7.all.final.mRNA.gff -d > Simulation.mRNA.intersect
+python mPing_position.py --input Simulation.intersect --mrna Simulation.mRNA.intersect
+python mPing_position_2kb.py --input Simulation.intersect --mrna Simulation.mRNA.intersect
+python mPing_intron.py --input Simulation.intersect 
+python mPing_intergenic.py --input Simulation.mRNA.intersect
+
+
+#chromome4 distribution
+mkdir Figure7_mPing_distribution Figure7_mPing_distribution/bin Figure7_mPing_distribution/input Figure7_mPing_distribution/input/Chromosome4 
+grep "Chr4" ../../Figure7_Circos/MSU7.exon.histogram.txt > ../input/Chromosome4/Chr4.exon.histogram.txt
+grep "Chr4" ../../Figure7_Circos/GFF.Simulation.histogram.txt > ../input/Chromosome4/Chr4.simulation.histogram.txt
+grep "Chr4" ../../Figure7_Circos/GFF.RIL.histogram.txt > ../input/Chromosome4/Chr4.RIL.histogram.txt
+grep "Chr4" ../../Figure7_Circos/GFF.DHS.histogram.txt > ../input/Chromosome4/Chr4.DHS.histogram.txt
+cat Plot_Density_Chr4.R | R --slave
+#mping distance to DHS plot
+python Distance2DHS.py > log 2>&1 &
+#DHS profile around mping TSD
+python TSDprofile_DHS_R.py --bam ../input/DHS.unique.bam --gff ../input/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.unique_mPing.gff > log 2>&1 &
+#mPing distribution around gene
+cat mping_intergenic_3distance_withsim_chromatin.R | R --slave
+cat mping_intergenic_5distance_withsim_chromatin.R | R --slave
+cat mping_intergenic_5distance_withsim_chromatin.R | R --slave
+cat mping_position_breakY_withsim_chromatin.R | R --slave
+cat mping_position_breakY_withsim_chromatin_2kb.R | R --slave
+#DHS and Nucleosome distribution at TSS and TTS
+qsub run_DHS.sh
+qsub run_Nucleosome.sh
+cat TSSprofile_Nuc_DHS.R | R --slave
+cat TTSprofile_Nuc_DHS.R | R --slave
 
