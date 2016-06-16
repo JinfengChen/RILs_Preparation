@@ -38,6 +38,10 @@ echo "Fig1b"
 cd Figure2_mPing_Ping_correlation
 ln -s ../Prepare0_mPing_calls/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.ping_number.summary ./
 cat Fig1b.R | R --slave
+paste RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.share
+d_unique_table.ping_code.txt ../Prepare0_Sequence_Depth/RILs_ALL_bam_correct_merged.sorted.summary > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt
+head -n 1 RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.single_ping.txt
+awk '$9==1' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt >> RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.single_ping.txt
 
 echo "mPing frequency"
 cd Figure3_mPing_frequency
@@ -77,15 +81,27 @@ echo "3.1.3 Mapping reads to pseudogenome"
 cd Prepare0_mPing_excision_Identification/bin
 python runRIL_bwa.py --input ../input/RILs_ALL_unmapped_mping_fastq > log 2>&1 &
 perl /rhome/cjinfeng/BigData/software/bin/qsub-pbs.pl -q js --maxjob 5 --lines 1 --interval 120 --resource nodes=1:ppn=12,walltime=100:00:00,mem=20G --convert no RIL_bwa.sh > log1 2>&1 &
-mkdir ../input/RILs_ALL_unmapped_mping_bam
-mv *.bam ../input/RILs_ALL_unmapped_mping_bam/
-mv *.bai ../input/RILs_ALL_unmapped_mping_bam/
-mv *.dupli ../input/RILs_ALL_unmapped_mping_bam/
+mkdir ../input/RILs_ALL_unmapped_mping_bam_HEG4_mPing
+mkdir ../input/RILs_ALL_unmapped_mping_bam_RILs_mPing
+#run and mv using HEG4 mPing
+mv *.bam ../input/RILs_ALL_unmapped_mping_bam_HEG4_mPing/
+mv *.bai ../input/RILs_ALL_unmapped_mping_bam_HEG4_mPing/
+mv *.dupli ../input/RILs_ALL_unmapped_mping_bam_HEG4_mPing/
+#run and mv using RILs mPing > AF0.1
+mv *.bam ../input/RILs_ALL_unmapped_mping_bam_RILs_mPing/
+mv *.bai ../input/RILs_ALL_unmapped_mping_bam_RILs_mPing/
+mv *.dupli ../input/RILs_ALL_unmapped_mping_bam_RILs_mPing/
+
 echo "3.1.4 summary mping boundary coverage"
 cd Prepare0_mPing_excision_Identification/bin
 cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_275line_correct/MPR.geno.data ../input
 cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_275line_correct/MPR.geno.data ../input
-python mPing_Boundary_Coverage.py --bam_ref ../input/RILs_ALL_bam_correct_merged --bam_pseudo ../input/RILs_ALL_unmapped_mping_bam --gff_ref ../input/HEG4.ALL.mping.non-ref.gff --gff_pseudo ../input/MSU_r7.Pseudo_mPing.gff > log 2>&1 &
+#RILs mPing, used to design PCR screen
+python mPing_Boundary_Coverage.py --bam_ref ../input/RILs_ALL_bam_correct_merged --bam_pseudo ../input/RILs_ALL_unmapped_mping_bam_RILs_mPing --gff_ref ../input/RIL275_RelocaTEi.CombinedGFF.characterized.AF0.1.gff --gff_pseudo ../input/MSU_r7.Pseudo_mPing_RILs.gff > log 2>&1 &
+python Ping_number_RILs.High_exicison.py --csv mPing_boundary_mPing_RILs --ping_code ../../Prepare0_mPing_calls/RIL275_RelocaTE.sofia.ping_code.table
+
+#HEG4 mPing, used to call excision
+python mPing_Boundary_Coverage.py --bam_ref ../input/RILs_ALL_bam_correct_merged --bam_pseudo ../input/RILs_ALL_unmapped_mping_bam_HEG4_mPing --gff_ref ../input/HEG4.ALL.mping.non-ref.gff --gff_pseudo ../input/MSU_r7.Pseudo_mPing.gff > log 2>&1 &
 #add ping code and excision/gt status to csv
 python Ping_number_RILs.High_exicison.py --csv mPing_boundary_mPing --ping_code ../../Prepare0_mPing_calls/RIL275_RelocaTE.sofia.ping_code.table
 #summary excision from csv
@@ -99,6 +115,8 @@ cd bin
 python footprint_events.py --input ../../Prepare0_mPing_excision_Identification/bin/mPing_boundary.linked_50Mb_debug2.mping_excision.list --blacklist ../../Prepare0_mPing_excision_Identification/bin/Bam.Core.blacklist --output Excision_newpipe_version1 > log 2>&1 &
 awk '$2>=5' Excision_newpipe_version1.footprint.list.txt > Excision_newpipe_version1.footprint.high.txt
 cp Excision_newpipe_version1.footprint.list.txt Excision_newpipe_version1.footprint.list.noPing.txt
+echo "summary excision number"
+python sum_excision.py --input Excision_newpipe_version1.footprint.list.noPing.txt
 
 echo "3.3 Excision frequency plot"
 cd Figure4_high_exicision_loci
@@ -107,6 +125,8 @@ cut -f1-2 Excision_newpipe_version1.footprint.list.noPing.txt | grep "Chr" > Exc
 cut -f2 Excision_newpipe_version1.footprint.list.draw.txt | perl ~/BigData/software/bin/numberStat.pl
 cat mping.excision_events.binomial_test.R | R --slave
 cat mping.excision_events.distr.R | R --slave
+cd Prepare0_Parental_mPing_loci
+python Mendel_Deviation.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.frequency | sort -k9nr | awk '$9<0.0001' | sort -k7n > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_mping.ril.deviation_from_mendel.txt
 
 echo "3.4 mPing distance"
 #need to finalize the distance, rewrite? How to get this "mPing_dist_RIL_AF0.1.50Mb.list.sorted" file? how many changes comapred to "mPing_dist2.50Mb.list.sorted"
@@ -150,6 +170,27 @@ echo "3.8" High excision associated genes
 mkdir Prepare0_mPing_excision_genes
 cd Prepare0_mPing_excision_genes 
 python High_excision_asso_genes.py --input 1 > Excision_newpipe_version1.footprint.high.associated_gene.txt
+
+echo "3.9" Excision Validation
+echo "3.9.1"
+mkdir Prepare0_mPing_SV_screen/bin
+python mPing_unknown_gt_pairs_RILs.py --input High_excision_mPing.pairs --matrix ../input/mPing_boundary_mPing_RILs_GT_Ping_code
+python RILs_need.py > High_excision_mPing.needDNA
+
+echo "3.9.2" PCR screen for SV
+#update blackout RILs that need for PCR.
+mkdir Prepare0_mPing_SV_screen_update/bin
+cd Prepare0_mPing_SV_screen_update/bin
+cp ../../Prepare0_mPing_SV_screen/bin/*.check.list ./
+cp ../../Prepare0_mPing_SV_screen/bin/*.rils ./
+python RILs_need_from_blackout.py > ALL.blackout.update
+
+#after pcr screen, summary the results
+mkdir Prepare0_mPing_SV_screen_PCR/bin
+cd Prepare0_mPing_SV_screen_PCR/bin 
+python SV_screen_PCR_results.py
+python SV_screen_PCR_not_finished.py > RILs.not_finished
+grep -v "high" RILs.not_finished | grep -v "HEMP" | cut -f1 | sort | uniq | sort -n > RILs.not_finished.DNA
 
 echo "4. mPing distribution"
 mkdir Figure7_Circos 

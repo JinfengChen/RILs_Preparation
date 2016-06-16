@@ -1,0 +1,1 @@
+/opt/aspera/3.3.3/bin/ascp -i /opt/aspera/3.3.3/etc/asperaweb_id_dsa.openssh -QT -l100m -k1 -d RIL9_0_GTTTCG_FC153L5_p1.fq.gz subasp@upload.ncbi.nlm.nih.gov:uploads/jinfeng.chen@ucr.edu_yWAL07Qi/PRJNA316308/
