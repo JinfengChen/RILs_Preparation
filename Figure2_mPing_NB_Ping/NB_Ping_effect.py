@@ -97,11 +97,11 @@ def NB_ping(infile, prefix, ping):
             #w1, pvalue1 = scipy.stats.mannwhitneyu(data[ping_n][1], data[ping_n+1][1]) 
             #print '%s ping with NB_ping: n %s, mean %s, std %s' %(ping_n, len(data[ping_n][1]), ping_w_nb_mean, ping_w_nb_std)
             #print '%s ping without NB_ping: n %s, mean %s, std %s' %(ping_n, len(data[ping_n][0]), ping_wo_nb_mean, ping_wo_nb_std)
-            #print 'Wilcoxon-Matt-Whitney test NB_ping vs Ping: %s, %s' %(w, pvalue)
+            print 'Wilcoxon-Matt-Whitney test NB_ping vs Ping: %s, %s' %(w, pvalue)
             print '%s: %s/%s=%s' %(ping_n, ping_w_nb_mean, ping_wo_nb_mean, float(ping_w_nb_mean)/float(ping_wo_nb_mean))
-            if ping_n < 7:
-                w1, pvalue1 = scipy.stats.mannwhitneyu(data[ping_n][1], data[ping_n+1][1])
-                print 'Wilcoxon-Matt-Whitney test low_ping vs high_ping: %s, %s' %(w1, pvalue1)
+            #if ping_n < 7:
+            #    w1, pvalue1 = scipy.stats.mannwhitneyu(data[ping_n][1], data[ping_n+1][1])
+            #    print 'Wilcoxon-Matt-Whitney test low_ping vs high_ping: %s, %s' %(w1, pvalue1)
         ofile.close()
 
         Rcmd='''

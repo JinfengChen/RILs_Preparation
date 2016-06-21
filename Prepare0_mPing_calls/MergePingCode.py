@@ -76,7 +76,8 @@ def main():
 
     prefix = '%s.ping_code.txt' %(os.path.splitext(args.input)[0])
     print prefix
-    ping_code = read_ping_code('RIL275_RelocaTE.sofia.ping_code.table')
+    #ping_code = read_ping_code('RIL275_RelocaTE.sofia.ping_code.table')
+    ping_code = read_ping_code('RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt')
     merge_file(args.input, ping_code, prefix)
 
 if __name__ == '__main__':

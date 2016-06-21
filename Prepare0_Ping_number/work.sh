@@ -9,6 +9,8 @@ echo "lulu"
 
 echo "RelocaTE2"
 python Ping_RelocaTE2.py --input RILs_ALL_fastq_correct_merged_RelocaTEi_Ping > log 2>&1 &
+sed 's/_RelocaTEi//' RILs_ALL_fastq_correct_merged_RelocaTEi_Ping.summary | sed 's/RIL//'| sort -k1,1n > RILs_ALL_fastq_correct_merged_RelocaTEi_Ping.summary.sorted.txt
+sed 's/_RelocaTEi//' RILs_ALL_fastq_correct_merged_RelocaTEi_Ping.summary | sed 's/RIL//'| sort -k1,1n| grep "*"
 
 echo "sofia vs lulu"
 #65 diff
@@ -23,4 +25,6 @@ paste RIL_ping_copynumber_lulu_272.txt RILs_275_correct_Ping_genotype.table.ping
 paste RIL_ping_copynumber_lulu_272.txt RILs_275_correct_Ping_genotype.table.ping_code.list | awk '$2 == $7 && $3!=$8'| wc -l   
 #check detail comfirmed 5 might be different
 
+echo "new ping bam files"
+python subbam_RILs.py --input New_Ping.list
 

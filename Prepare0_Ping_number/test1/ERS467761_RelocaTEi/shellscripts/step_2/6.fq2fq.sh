@@ -1,0 +1,1 @@
+/rhome/cjinfeng/BigData/software/seqtk-master/seqtk seq -A /bigdata/wesslerlab/shared/Rice/Rice_population_sequence/Rice_3000/CAAS/Japonica_fastq/ERS467761/ERR615110_1.fastq.gz > /bigdata/wesslerlab/shared/Rice/Rice_population_sequence/Rice_3000/CAAS/Japonica_fastq/ERS467761/ERR615110_1.fa

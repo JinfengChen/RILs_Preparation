@@ -58,6 +58,7 @@ def parse_gff(infile):
 
 #Chr3    not.give        RelocaTE_i      28019800        28019802        .       +       .       ID=repeat_Chr3_28019800_28019802;
 def parse_gff_ping(infile, ping_inf):
+    print infile
     num = 0
     if not os.path.isfile(infile) or not os.path.getsize(infile):
         return 0, [''], ['']
@@ -69,13 +70,37 @@ def parse_gff_ping(infile, ping_inf):
             line = line.rstrip()
             if len(line) > 2 and not line.startswith(r'#'):
                 unit = re.split(r'\t', line)
-                ping_id = '%s:%s' %(unit[0], unit[3])
-                if ping_inf.has_key(ping_id):
-                    ping_code.append(ping_inf[ping_id])
-                else:
+                flag = 0
+                print line
+                for i in range(0, 10):
+                    pos = int(unit[3]) + i
+                    ping_id = '%s:%s' %(unit[0], pos)
+                    print 'ck1: %s, %s' %(pos, ping_id)
+                    if ping_inf.has_key(ping_id) and ping_inf[ping_id] is not 'X':
+                        ping_code.append(ping_inf[ping_id])
+                        ping_loci.append(ping_id)
+                        ping_number += 1
+                        flag = 1
+                        print 'yes'
+                    elif ping_inf.has_key(ping_id) and ping_inf[ping_id] == 'X': #ping fragment, 700 bp, only have 5' end
+                        flag = 2
+                for i in range(1, 10):
+                    pos = int(unit[3]) - i
+                    ping_id = '%s:%s' %(unit[0], pos)
+                    print 'ck2: %s, %s' %(pos, ping_id)
+                    if ping_inf.has_key(ping_id) and ping_inf[ping_id] is not 'X':
+                        ping_code.append(ping_inf[ping_id])
+                        ping_loci.append(ping_id)
+                        ping_number += 1
+                        flag = 1
+                        print 'yes'
+                    elif ping_inf.has_key(ping_id) and ping_inf[ping_id] == 'X':
+                        flag = 2
+                if flag == 0:
                     ping_code.append('*')
-                ping_number += 1
-                ping_loci.append(ping_id)
+                    ping_number += 1
+                    ping_loci.append(ping_id)
+                    print 'new ping'
     return ping_number, ping_code, ping_loci
 
 #1       B001    China   Temperate japonica      ERS470219       anonftp@ftp.ncbi.nlm.nih.gov:/sra/sra-instant/reads/ByRun/sra/ERR/ERR622/ERR622583/ERR622583.sra

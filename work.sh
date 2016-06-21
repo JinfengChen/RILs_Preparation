@@ -18,15 +18,16 @@ python Sum_class_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_Reloca
 #generate *.type.summary which have summary of hom/het/som for unique mPing
 python Sum_type_clean.py --prefix RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean
 #generate unique hom/het mPing number according to different copy number Ping
-python Sum_Ping_mPing.py --code RIL275_RelocaTE.sofia.ping_code.table --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean
+#python Sum_Ping_mPing.py --code RIL275_RelocaTE.sofia.ping_code.table --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean
+python Sum_Ping_mPing.py --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean
 #analysis mping copy number and read depth on ping vs. mping correlation
 cut -f2 RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt | perl ~/BigData/software/bin/numberStat.pl
 #mean=193, -10%=173 and +10%=212
-python Sum_Ping_mPing_Narrow_range.py --code RIL275_RelocaTE.sofia.ping_code.table --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.narrow_range
+python Sum_Ping_mPing_Narrow_range.py --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.narrow_range
 awk '$2>=173 && $2<=212' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.narrow_range.txt
-python Sum_Ping_mPing_High_depth.py --code RIL275_RelocaTE.sofia.ping_code.table --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.high_depth
+python Sum_Ping_mPing_High_depth.py --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.high_depth
 python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output high_depth
-python Sum_Ping_mPing_High_depth.py --code RIL275_RelocaTE.sofia.ping_code.table --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.high_narrow --narrow
+python Sum_Ping_mPing_High_depth.py --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.high_narrow --narrow
 python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output high_narrow --narrow
 
 echo "Fig1a"
@@ -38,8 +39,8 @@ echo "Fig1b"
 cd Figure2_mPing_Ping_correlation
 ln -s ../Prepare0_mPing_calls/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.ping_number.summary ./
 cat Fig1b.R | R --slave
-paste RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.share
-d_unique_table.ping_code.txt ../Prepare0_Sequence_Depth/RILs_ALL_bam_correct_merged.sorted.summary > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt
+#single ping analysis
+paste RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt ../Prepare0_Sequence_Depth/RILs_ALL_bam_correct_merged.sorted.summary > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt
 head -n 1 RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.single_ping.txt
 awk '$9==1' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt >> RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.single_ping.txt
 
