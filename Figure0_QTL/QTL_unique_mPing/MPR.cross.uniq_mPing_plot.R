@@ -17,18 +17,39 @@ QTL.mr <- scanone(cross,pheno.col=7,method="mr")
 #LOD <- summary(operm,alpha=0.05) ## get LOD threshold
 #QTL.mr.test <- summary(QTL.mr,perms=operm,alpha=0.05,format="allpeak",pvalues=TRUE)
 chr <- 1:12
-plot(QTL.mr, chr=c(chr), lodcolumn=1, main='', ylab="LOD score", col="black", lwd=1)
-abline(h=3.30, lty=2, col="orange")
+plot(QTL.mr, chr=c(chr), lodcolumn=1, main='', ylab="LOD score", col="black", lwd=1, ylim=c(0, 30))
+abline(h=3.31, lty=2, col="orange")
 #iplotMScanone(QTL.mr)
 #ping_pos <- c("17.924119", "23.439904", "136.703516", "125.669806", "33.193178", "48.885324", "73.890293", "87.340104")
 ping_pos <- c(17.924119, 23.439904, 366.76+25*2+136.703516, 1027.97+25*6+125.669806, 1300.73+25*8+33.193178, 1300.73+25*8+48.885324, 1300.73+25*8+73.890293, 892.32+25*5+87.340104)
 ping_lod <- c(6.81, 4.32, 0.17, 0.65, 3.51, 4.74, 1.04, 3.63e-6)
 ping_name <- c("Ping_A", "Ping_B", "Ping_C", "Ping_D", "Ping_E", "Ping_F", "Ping_G", "Ping_H")
 for (i in 1:8){
-    segments(ping_pos[i], 7.2, ping_pos[i], ping_lod[i], col='gray', lty=2, xpd=TRUE)
-    text(ping_pos[i], 7.4, labels=ping_name[i], adj=0, srt=45, xpd=TRUE)
+    segments(ping_pos[i], 32.2, ping_pos[i], ping_lod[i], col='gray', lty=2, xpd=TRUE)
+    text(ping_pos[i], 32.4, labels=ping_name[i], adj=0, srt=45, xpd=TRUE)
 }
 dev.off()
 
-
-
+pdf ("MPR.cross.uniq_mPing_plot_chr1_9.pdf", width=7, height=5)
+#chr1
+par(mar=c(5,5,4,2))
+plot(QTL.mr, chr=1, lodcolumn=1, main='', xlab="Chr1 Map position (cM)", ylab="LOD score", col="black", lwd=1, ylim=c(0, 30))
+abline(h=3.30, lty=2, col="orange")
+ping_pos <- c(17.924119, 23.439904)
+ping_lod <- c(6.81, 4.32)
+ping_name <- c("Ping_A", "Ping_B")
+for (i in 1:2){
+  segments(ping_pos[i], 32.2, ping_pos[i], ping_lod[i], col='gray', lty=2, xpd=TRUE)
+  text(ping_pos[i], 32.4, labels=ping_name[i], adj=0, srt=45, xpd=TRUE)
+}
+#chr9
+plot(QTL.mr, chr=9, lodcolumn=1, main='', xlab="Chr9 Map position (cM)", ylab="LOD score", col="black", lwd=1, ylim=c(0, 10))
+abline(h=3.30, lty=2, col="orange")
+ping_pos <- c(33.193178, 48.885324, 73.890293)
+ping_lod <- c(3.51, 4.74, 1.04)
+ping_name <- c("Ping_E", "Ping_F", "Ping_G")
+for (i in 1:3){
+  segments(ping_pos[i], 10.6, ping_pos[i], ping_lod[i], col='gray', lty=2, xpd=TRUE)
+  text(ping_pos[i], 10.6, labels=ping_name[i], adj=0, srt=45, xpd=TRUE)
+}
+dev.off()

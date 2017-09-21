@@ -7,9 +7,10 @@ ln -s ~/BigData/00.RD/RILs/Transpostion/bin/RILs_ALL_fastq_correct_merged_duplic
 #generate clean gff of mPing call: remove TSD that not 3 bp and Ping/Pong calls.
 python Clean_Calls.py --gff RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.gff
 #generate unique gff of mPing call; generate unique mPing number according to different copy number of Ping
-python Unique_mPing_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.gff --reference HEG4.ALL.mping.non-ref.AF0.1.gff --code RIL275_RelocaTE.sofia.ping_code.table
+python Unique_mPing_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.gff --reference HEG4.ALL.mping.non-ref.AF0.1.gff --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt
 #analyze shared mPing with HEG4 or in the RILs and unique mPing in each RILs
 #generate summary table for shared and unique mPing in each RIL
+#generate mPing frequency table
 python Sum_unique_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.unique_mPing.gff > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.unique_mPing.summary
 #merge shared_unique_table with Ping code
 python MergePingCode.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.txt
@@ -43,6 +44,31 @@ cat Fig1b.R | R --slave
 paste RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt ../Prepare0_Sequence_Depth/RILs_ALL_bam_correct_merged.sorted.summary > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt
 head -n 1 RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.single_ping.txt
 awk '$9==1' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.txt >> RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.depth.single_ping.txt
+
+echo "Fig2"
+#Fig2c
+cd Figure0_QTL
+mkdir QTL_unique_mPing
+cd QTL_unique_mPing
+cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_272line/MPR.cross.uniq.cro ./
+cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_272line/MPR.cross.uniq.map ./
+cat MPR.cross.uniq_mPing_plot.R| R --slave
+#Plot Bin and Tree
+cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_272line/MPR.geno.bin.uniq ./
+cp ~/BigData/00.RD/RILs/Figures/QTL_BinPlot/bin/MapDist.py ./
+cp ~/BigData/00.RD/RILs/Figures/QTL_BinPlot/bin/MapGenome_Chr.py
+cp ~/BigData/00.RD/RILs/Figures/QTL_BinPlot/bin/QTL_BinMap_Chr.py ./
+cp ~/BigData/00.RD/RILs/Figures/QTL_BinPlot/bin/TraitDist4Tree.py ./
+cp ~/BigData/00.RD/RILs/QTL_pipe/input/trait/May28_2013.RIL.trait.table.QTL.trait.txt.first ./
+python MapDist.py --input MPR.geno.bin.uniq > MPR.geno.bin.uniq.dist
+python MapGenome_Chr.py --input MPR.geno.bin.uniq > MSU7.Chr.midpoint
+python QTL_BinMap_Chr.py --input MPR.geno.bin.uniq.dist --bin MPR.geno.bin.uniq.new
+python TraitDist4Tree.py --input May28_2013.RIL.trait.table.QTL.trait.txt.first > May28_2013.RIL.trait.table.QTL.trait.txt.first.dist
+python Trait_Tree_Label.py --input May28_2013.RIL.trait.table.QTL.trait.txt.first.dist
+mv Trait_Tree_Label.pdf Trait_Tree_Label.All_Traits.pdf
+python Trait_Tree_Label.py --input MPR.geno.bin.uniq.dist
+mv Trait_Tree_Label.pdf Trait_Tree_Label.Bin_Map.pdf
+
 
 echo "mPing frequency"
 cd Figure3_mPing_frequency
