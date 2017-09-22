@@ -17,6 +17,7 @@ plot_correlation <- function(x, y, color='red', xpos=7, ypos=0.1, title="", ...)
   text(xpos, ypos, pos=4, paste('R-squared =', r2, ', P =', p, sep=' '), cex=1.4, col=color) 
 }
 
+library("beeswarm")
 pdf("Fig1b_scatter_plot.pdf")
 par(mar=c(5,5,4,2))
 mping <- read.table("RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt", header=TRUE)
