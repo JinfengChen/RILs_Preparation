@@ -68,7 +68,12 @@ python Trait_Tree_Label.py --input May28_2013.RIL.trait.table.QTL.trait.txt.firs
 mv Trait_Tree_Label.pdf Trait_Tree_Label.All_Traits.pdf
 python Trait_Tree_Label.py --input MPR.geno.bin.uniq.dist
 mv Trait_Tree_Label.pdf Trait_Tree_Label.Bin_Map.pdf
-
+#summary map
+mkdir MapSummary
+cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_272line/MPR.geno.bin.uniq ./
+cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_272line/MPR.cross.uniq.cro ./
+cp ~/BigData/00.RD/RILs/QTL_pipe/bin/RILs_ALL_272line/MPR.cross.uniq.map ./
+python MapSummary.py --input MPR.cross.uniq --bin MPR.geno.bin.uniq > RIL272.log
 
 echo "mPing frequency"
 cd Figure3_mPing_frequency
