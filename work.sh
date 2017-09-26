@@ -4,6 +4,12 @@ cd Prepare0_mPing_calls
 ln -s ~/BigData/00.RD/RILs/Transpostion/bin/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.* ./
 ln -s ~/BigData/00.RD/RILs/Transpostion/bin/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.summary ./
 ln -s ~/BigData/00.RD/RILs/Transpostion/bin/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.summary_clean.table ./
+#generate shared mPing wiht NB and both NB and HEG4 for each RIL
+cp ~/BigData/00.RD/RILs/Transpostion/bin/Compare_NB_mPing/HEG4.mping.ref_only.gff ./
+cp ~/BigData/00.RD/RILs/Transpostion/bin/Compare_NB_mPing/HEG4.mping.shared.gff ./
+cp /rhome/cjinfeng/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Preparation/Prepare0_Parental_Ping/HEG4.ALL_Filter.ping.gff ./
+python Sum_Shared_mPing_Ref.py --gff RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.gff
+
 #generate clean gff of mPing call: remove TSD that not 3 bp and Ping/Pong calls.
 python Clean_Calls.py --gff RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.gff
 #generate unique gff of mPing call; generate unique mPing number according to different copy number of Ping
@@ -30,6 +36,7 @@ python Sum_Ping_mPing_High_depth.py --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_co
 python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output high_depth
 python Sum_Ping_mPing_High_depth.py --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.high_narrow --narrow
 python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output high_narrow --narrow
+
 
 echo "Fig1a"
 cd Figure1_mPing_insertions
