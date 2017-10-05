@@ -48,11 +48,44 @@ perl /rhome/cjinfeng/BigData/software/bin/qsub-slurm.pl --maxjob 5 --lines 1 --i
 ln -s ../Prepare0_mPing_frequency/RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mPing.frequency ./
 #python mPing_allele_frequency.py --frequency RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mPing.frequency --gff RelocaTEi_HEG4_P/repeat/results/ALL.all_nonref_insert.characTErized.gff > HEG4.P.mping.non-ref.allele.frq
 #awk '$2!~/NA/' HEG4.P.mping.non-ref.allele.frq| awk '{print $1"\t"$2"\t"$2/272}' | sort -k2,2n > HEG4.P.mping.non-ref.allele.frq.sorted
-python mPing_allele_frequency.py --frequency RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mPing.frequency --gff RelocaTE2_fq_RelocaTEi/HEG4P_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff > HEG4.P.RelocaTE2.mping.non-ref.allele.frq
+python mPing_allele_frequency.py --frequency RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mPing.frequency --gff RelocaTE2_fq_RelocaTEi/HEG4P_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff --subgff HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff > HEG4.P.RelocaTE2.mping.non-ref.allele.frq
 awk '$2!~/NA/' HEG4.P.RelocaTE2.mping.non-ref.allele.frq | awk '{print $1"\t"$2"\t"$2/272}' | sort -k2,2n > HEG4.P.RelocaTE2.mping.non-ref.allele.frq.sorted
+sed 's/NA/0/' HEG4.P.RelocaTE2.mping.non-ref.allele.frq | awk '{print $1"\t"$2"\t"$2/272}' | sort -k2,2n > HEG4.P.RelocaTE2.mping.non-ref.allele.frq.sorted
 #difference between RelocaTE2 and previous version
 #12
 bedtools window -w 10 -a RelocaTE2_fq_RelocaTEi/HEG4P_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff -b RelocaTEi_HEG4_P/repeat/results/ALL.all_nonref_insert.characTErized.gff -v | wc -l
 #4
 bedtools window -w 10 -b RelocaTE2_fq_RelocaTEi/HEG4P_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff -a RelocaTEi_HEG4_P/repeat/results/ALL.all_nonref_insert.characTErized.gff -v | wc -l
+#different in AF0.1 between HEG4.P and HEG4.P + HEG4.2.3
+#2
+bedtools window -w 10 -a HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff -b HEG4.ALL.mping.non-ref.AF0.1.gff -v | wc -l
+#14
+bedtools window -w 10 -b HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff -a HEG4.ALL.mping.non-ref.AF0.1.gff -v | wc -l
 
+
+#all HEG4.P mPing that have >0.1 in RILs are hom
+bedtools window -w 10 -a RelocaTE2_fq_RelocaTEi/HEG4P_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff -b HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff | grep "het"
+#126
+bedtools window -w 10 -a RelocaTE2_fq_RelocaTEi/HEG4P_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff -b HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff -v | grep "hom" -c
+#20
+bedtools window -w 10 -a RelocaTE2_fq_RelocaTEi/HEG4P_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff -b HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff -v | grep "het" -c
+
+echo "compare HEG4.P to HEG4.2.1, 2.2, 2.3"
+python mPing_allele_frequency.py --frequency RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mPing.frequency --gff RelocaTE2_fq_RelocaTEi/HEG4.2.1_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff --subgff HEG4.2.1.RelocaTE2.mping.non-ref.AF0.1.gff > HEG4.2.1.RelocaTE2.mping.non-ref.allele.frq
+python mPing_allele_frequency.py --frequency RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mPing.frequency --gff RelocaTE2_fq_RelocaTEi/HEG4.2.2_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff --subgff HEG4.2.2.RelocaTE2.mping.non-ref.AF0.1.gff > HEG4.2.2.RelocaTE2.mping.non-ref.allele.frq
+python mPing_allele_frequency.py --frequency RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mPing.frequency --gff RelocaTE2_fq_RelocaTEi/HEG4.2.3_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff --subgff HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff > HEG4.2.3.RelocaTE2.mping.non-ref.allele.frq
+#
+sed 's/NA/0/' HEG4.2.3.RelocaTE2.mping.non-ref.allele.frq | awk '{print $1"\t"$2"\t"$2/272}' | sort -k2,2n > HEG4.2.3.RelocaTE2.mping.non-ref.allele.frq.sorted
+#HEG4.P only has one more compared to 2.1 but totally contained in 2.2 and 2.3
+bedtools window -w 10 -b HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff -a HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff -v
+bedtools window -w 10 -b HEG4.2.2.RelocaTE2.mping.non-ref.AF0.1.gff -a HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff -v
+bedtools window -w 10 -b HEG4.2.1.RelocaTE2.mping.non-ref.AF0.1.gff -a HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff -v
+#HEG4.2.3 is same with HEG4.2.2 and both have one more than HEG4.2.1
+bedtools window -w 10 -a HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff -b HEG4.2.1.RelocaTE2.mping.non-ref.AF0.1.gff -v
+bedtools window -w 10 -a HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff -b HEG4.2.2.RelocaTE2.mping.non-ref.AF0.1.gff -v
+#HEG4 has two more mPing than previous merged from HEG4.2.3 and HEG4.P. Therefore, we should use HEG4.2.3 only.
+bedtools window -w 10 -a HEG4.ALL.mping.non-ref.AF0.1.gff -b HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff -v
+bedtools window -w 10 -b HEG4.ALL.mping.non-ref.AF0.1.gff -a HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff -v
+#summary hom/het/som
+python mPing_het_hom.py --frequency RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mPing.frequency --gff RelocaTE2_fq_RelocaTEi/HEG4.2.3_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff > HEG4.2.3.RelocaTE2.mping.non-ref.allele.frq.sum
+python mPing_het_hom.py --frequency RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mPing.frequency --gff RelocaTE2_fq_RelocaTEi/HEG4P_RelocaTEi/repeat/results/ALL.all_nonref_insert.characTErized.gff > HEG4.P.RelocaTE2.mping.non-ref.allele.frq.sum

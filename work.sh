@@ -13,7 +13,12 @@ python Sum_Shared_mPing_Ref.py --gff RILs_ALL_fastq_correct_merged_duplicate_Rel
 #generate clean gff of mPing call: remove TSD that not 3 bp and Ping/Pong calls.
 python Clean_Calls.py --gff RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.gff
 #generate unique gff of mPing call; generate unique mPing number according to different copy number of Ping
-python Unique_mPing_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.gff --reference HEG4.ALL.mping.non-ref.AF0.1.gff --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt
+#cp ../Prepare0_HEG4_mPing/HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff ./
+#python Unique_mPing_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.gff --reference HEG4.ALL.mping.non-ref.AF0.1.gff --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt
+#python Unique_mPing_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.gff --reference HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt
+cp ../Prepare0_HEG4_mPing/HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff
+python Unique_mPing_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.gff --reference HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt
+
 #analyze shared mPing with HEG4 or in the RILs and unique mPing in each RILs
 #generate summary table for shared and unique mPing in each RIL
 #generate mPing frequency table
