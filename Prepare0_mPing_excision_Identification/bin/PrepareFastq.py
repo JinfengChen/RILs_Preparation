@@ -25,7 +25,8 @@ def fasta_id(fastafile):
     return fastaid
 
 def runjob(script, lines):
-    cmd = 'perl /rhome/cjinfeng/BigData/software/bin/qsub-pbs.pl --maxjob 30 --lines %s --interval 120 --resource nodes=1:ppn=1,walltime=100:00:00,mem=20G --convert no %s' %(lines, script)
+    #cmd = 'perl /rhome/cjinfeng/BigData/software/bin/qsub-pbs.pl --maxjob 30 --lines %s --interval 120 --resource nodes=1:ppn=1,walltime=100:00:00,mem=20G --convert no %s' %(lines, script)
+    cmd = 'perl /rhome/cjinfeng/BigData/software/bin/qsub-slurm.pl --maxjob 60 --lines %s --interval 120 --task 1 --mem 20G --time 20:00:00 --convert no %s' %(lines, script)
     #print cmd 
     os.system(cmd)
 
@@ -57,9 +58,9 @@ def main():
 
     bam2fastq='/rhome/cjinfeng/BigData/software/bam2fastq/bam2fastq-1.1.0/bam2fastq'
     samtools ='/opt/linux/centos/7.x/x86_64/pkgs/samtools/1.2/bin/samtools'
-    if not os.path.exists('../input/Parent.ALL.mPing.100kb_flank.merge.table'):
-        os.system('bedtools slop -i ../input/Parent.ALL.mPing.gff -g /rhome/cjinfeng/BigData/00.RD/seqlib/MSU7.chrlen -b 100000 > ../input/Parent.ALL.mPing.100kb_flank.gff')
-        os.system('bedtools merge -i ../input/Parent.ALL.mPing.100kb_flank.gff > ../input/Parent.ALL.mPing.100kb_flank.merge.table')
+    if not os.path.exists('../input/Parent.ALL.mPing.415_plus_other.100kb_flank.merge.table'):
+        os.system('bedtools slop -i ../input/Parent.ALL.mPing.415_plus_other.gff -g /rhome/cjinfeng/BigData/00.RD/seqlib/MSU7.chrlen -b 100000 > ../input/Parent.ALL.mPing.415_plus_other.100kb_flank.gff')
+        os.system('bedtools merge -i ../input/Parent.ALL.mPing.415_plus_other.100kb_flank.gff > ../input/Parent.ALL.mPing.415_plus_other.100kb_flank.merge.table')
     bam0s = glob.glob('%s/*.bam' %(args.bam))
 
     #output directory
@@ -67,7 +68,7 @@ def main():
     if not os.path.exists(outdir):
         os.mkdir(outdir) 
     #mping region
-    mping_regs = os.path.abspath('../input/Parent.ALL.mPing.100kb_flank.merge.table')
+    mping_regs = os.path.abspath('../input/Parent.ALL.mPing.415_plus_other.100kb_flank.merge.table')
 
     cmd = []
     for bam in sorted(bam0s):

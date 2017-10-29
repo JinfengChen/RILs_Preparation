@@ -29,7 +29,8 @@ my $ssaha="/home/jfchen/software/ssaha2_v2.5.5_x86_64/";
 my $maq="/opt/tyler/bin/maq";
  
 my $SAMtool="/opt/linux/centos/7.x/x86_64/pkgs/samtools/1.2/bin/samtools";
-my $rmdup="/opt/picard/1.81/MarkDuplicates.jar";
+#my $rmdup="/opt/picard/1.81/MarkDuplicates.jar";
+my $rmdup="/opt/linux/centos/7.x/x86_64/pkgs/picard/1.130/bin/picard MarkDuplicates";
 
 if (exists $opt{1} and exists $opt{2}){
    if ($opt{tool}=~/bwa/){
@@ -48,7 +49,7 @@ if (exists $opt{1} and exists $opt{2}){
       print "Sort Bam!\n";
       `$SAMtool sort -@ $opt{cpu} $opt{project}.raw.bam $opt{project}.sort > $opt{project}.sort.log 2> $opt{project}.sort.log2`;
       print "Remove duplicate!\n";
-      `java -Xmx10G -jar $rmdup ASSUME_SORTED=TRUE REMOVE_DUPLICATES=TRUE VALIDATION_STRINGENCY=LENIENT INPUT=$opt{project}.sort.bam OUTPUT=$opt{project}.bam METRICS_FILE=$opt{project}.dupli > $opt{project}.rmdup.log 2> $opt{project}.rmdup.log2`;
+      `$rmdup ASSUME_SORTED=TRUE REMOVE_DUPLICATES=TRUE VALIDATION_STRINGENCY=SILENT INPUT=$opt{project}.sort.bam OUTPUT=$opt{project}.bam METRICS_FILE=$opt{project}.dupli > $opt{project}.rmdup.log 2> $opt{project}.rmdup.log2`;
       `$SAMtool index $opt{project}.bam`;
       unless ($opt{verbose}){
           `rm $opt{project}.sam $opt{project}.raw.bam $opt{project}.sort.bam`;

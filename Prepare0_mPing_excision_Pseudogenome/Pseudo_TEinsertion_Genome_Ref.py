@@ -152,7 +152,7 @@ def gff_parser(infile):
                         idx, value = re.split(r'\=', attr)
                         temp[idx] = value
                 repid   = temp['ID'] if temp.has_key('ID') else '%s_%s_%s' %(chro, start, end)
-                repname = temp['TE'].lower()
+                repname = temp['TE']
                 reptsd  = temp['TSD'] if temp.has_key('TSD') else 'TAA'
                 #repfam  = temp['Class']
                 data[chro].append([start, end, strand, repid, repname, reptsd, unit[8]])
