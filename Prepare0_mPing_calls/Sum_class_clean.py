@@ -40,6 +40,9 @@ def get_class(infile):
                 elif r3.search(line):
                     data[2] += 1
                     data[3] += 1
+                else:
+                    #if not characterized just give all to hom
+                    data[0] += 1
     return data
 
 def readtable(infile):
@@ -67,9 +70,9 @@ def main():
         sys.exit(2)
 
     prefix = os.path.splitext(os.path.splitext(args.input)[0])[0]
-    os.system('bedtools intersect -a %s.gff -b HEG4.ALL.mping.non-ref.AF0.1.gff > %s.shared_parental.gff' %(prefix, prefix))
-    os.system('bedtools intersect -a %s.gff -b HEG4.ALL.mping.non-ref.AF0.1.gff -v > %s.nonparental.gff' %(prefix, prefix))
-    os.system('bedtools intersect -a %s.nonparental.gff -b %s.unique_mPing.gff -v > %s.shared_nonparental.gff' %(prefix, prefix, prefix))
+    os.system('bedtools intersect -a %s.ALL_and_Shared.gff -b HEG4_NB_ALL.mPing.gff > %s.shared_parental.gff' %(prefix, prefix))
+    os.system('bedtools intersect -a %s.ALL_and_Shared.gff -b HEG4_NB_ALL.mPing.gff -v > %s.nonparental.gff' %(prefix, prefix))
+    os.system('bedtools intersect -a %s.nonparental.gff -b %s.unique_mPing.gff -f 1 -v > %s.shared_nonparental.gff' %(prefix, prefix, prefix))
  
     unique_class = get_class(args.input)
     shared_non_class = get_class('%s.shared_nonparental.gff' %(prefix)) 

@@ -62,7 +62,7 @@ def main():
         if frq.has_key(mping_idx):
             print '%s\t%s' %(mping_idx, frq[mping_idx])
             if args.subgff:
-                if float(frq[mping_idx]) >= 0:
+                if float(frq[mping_idx]) >= 10:
                     print >> ofile, '\t'.join(mpings[mping][0])
         else:
             print '%s\t%s' %(mping_idx, 'NA')

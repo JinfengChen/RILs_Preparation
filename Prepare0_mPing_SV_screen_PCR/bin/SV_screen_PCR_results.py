@@ -35,6 +35,9 @@ def read_results(infile):
                 unit = re.split(r'\t',line)
                 if not data.has_key(unit[0]):
                     data[unit[0]] =[unit[1], unit[2]]
+                if data.has_key(unit[0]):
+                    if data[unit[0]][0] == 'na':
+                        data[unit[0]] =[unit[1], unit[2]]
             elif line.startswith(r'HEMP'):
                 header = line
     return header, data

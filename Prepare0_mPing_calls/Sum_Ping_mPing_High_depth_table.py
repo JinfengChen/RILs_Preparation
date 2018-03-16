@@ -101,11 +101,11 @@ def read_unique_table(infile, ril_mping, narrow, output):
                 #    data[unit[0]] = [unit[5], str(int(unit[6]) + int(unit[7]))]
                 #have mapped depth >= 6 and mapped rate >= 0.9
                 if narrow: 
-                    if float(ril_mping[unit[0]][0]) >= 6.00 and float(ril_mping[unit[0]][1]) > 0.90 and int(unit[1]) >= 163 and int(unit[1]) <= 203:
+                    if float(ril_mping[unit[0]][0]) >= 6.00 and float(ril_mping[unit[0]][1]) >= 0.90 and int(unit[1]) >= 199 and int(unit[1]) <= 243:
                         data[unit[0]] = [unit[5], str(int(unit[6]) + int(unit[7]))]
                         print >> ofile, line
                 else:
-                    if float(ril_mping[unit[0]][0]) >= 6.00 and float(ril_mping[unit[0]][1]) > 0.90:
+                    if float(ril_mping[unit[0]][0]) >= 6.00 and float(ril_mping[unit[0]][1]) >= 0.90:
                         data[unit[0]] = [unit[5], str(int(unit[6]) + int(unit[7]))]
                         print >> ofile, line
             else:

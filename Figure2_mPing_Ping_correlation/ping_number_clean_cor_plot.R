@@ -8,12 +8,15 @@ plot_correlation_merged <- function(x, y, xlab, ylab, title, ...){
     text(0, 120, pos=4, paste('Y = ', b, '+', paste(a, 'X', sep=''), sep=' '), cex=1)
     #corrlation
     cor <- cor.test(x, y)
+    print(cor)
     r2 <- round(cor$estimate[[1]], 2)
     p  <- cor$p.value
+    print(p)
     #if (p == 0){
     #    p = '2.2e-16'
     #}else{
     p = signif(p, 2) 
+    print(p)
     #}
     text(0, 130, pos=4, paste('R2 =', r2, ', p-value <', p, sep=' '), cex=1)
     xpos <- 2.2
@@ -100,10 +103,10 @@ ping <- x[,9]
 ping_n <- x_n[,9]
 ping_h <- x_h[,9]
 ping_hn <- x_hn[,9]
-cor.test(ping, hom)
-cor.test(ping_n, hom_n)
-cor.test(ping_h, hom_h)
-cor.test(ping_hn, hom_hn)
+#cor.test(ping, hom)
+#cor.test(ping_n, hom_n)
+#cor.test(ping_h, hom_h)
+#cor.test(ping_hn, hom_hn)
 
 par(mfrow=c(2,2))
 plot_correlation_merged(ping, hom, 'Ping Copy Number', 'Unique homozygous mPing number', 'Default')

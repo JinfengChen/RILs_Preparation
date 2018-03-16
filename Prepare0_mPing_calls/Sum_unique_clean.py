@@ -98,6 +98,7 @@ def readtable_nonref(infile, mping_correct):
                     data[mping][ril] = 1
     return data
 
+
 ##unique mping
 def readtable(infile):
     data = defaultdict(lambda : int())
@@ -155,6 +156,8 @@ def main():
     mping_correct_index = readtable_ril_mping_correct('%s.overlap_ril' %(prefix))
     mping_ovlp_rils          = readtable_ril('%s.overlap_ril' %(prefix), mping_correct_index)
     mping_ovlp_heg4          = readtable_nonref('%s.overlap_ref' %(prefix), mping_correct_index)
+    mping_ovlp_nb_rils           = readtable_nonref('%s.overlap_ref_ril' %(prefix), mping_correct_index)
+    mping_ovlp_nb_ref            = readtable_nonref('%s.overlap_ref_NB' %(prefix), mping_correct_index)
 
     r = re.compile(r'(\w+):(\d+)-(\d+)')
     ##mPing_allele_frequency
@@ -174,6 +177,21 @@ def main():
         else:
             print >> ofile1, '%s\tRIL\t%s' %(mping, ','.join(map(str, mping_ovlp_rils[mping].keys())))
             print >> ofile, '%s\t%s\t%s\t%s\t%s\t%s\t%s\tRIL' %(chro, start, end, mping, '+', count, float(count)/272)
+    for mping in mping_ovlp_nb_rils.keys():
+        m = r.search(mping)
+        chro, start, end = ['', 0, 0]
+        if m:
+            chro = m.groups(0)[0]
+            start = m.groups(0)[1]
+            end   = m.groups(0)[2]
+        count = len(mping_ovlp_nb_rils[mping].keys())
+        if mping_ovlp_nb_ref.has_key(mping): 
+            print >> ofile1, '%s\tParental\t%s' %(mping, ','.join(map(str, mping_ovlp_nb_rils[mping].keys())))
+            print >> ofile, '%s\t%s\t%s\t%s\t%s\t%s\t%s\tParental' %(chro, start, end, mping, '+', count, float(count)/272)
+        else:
+            print >> ofile1, '%s\tRIL\t%s' %(mping, ','.join(map(str, mping_ovlp_nb_rils[mping].keys())))
+            print >> ofile, '%s\t%s\t%s\t%s\t%s\t%s\t%s\tRIL' %(chro, start, end, mping, '+', count, float(count)/272)
+        
     ofile.close()
     ofile1.close()
 

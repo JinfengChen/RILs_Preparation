@@ -10,12 +10,12 @@ plot_correlation_merged <- function(x, y, title, ...){
     cor <- cor.test(x, y)
     r2 <- round(cor$estimate[[1]], 2)
     p  <- cor$p.value
-    if (p == 0){
-        p = '2.2e-16'
-    }else{
-        p = signif(p, 2) 
-    }
-    text(0, 9, pos=4, paste('R2 =', r2, ', p-value <', p, sep=' '), cex=1)
+    #if (p == 0){
+    #    p = '2.2e-16'
+    #}else{
+    p = signif(p, 2) 
+    #}
+    text(0, 9, pos=4, paste('R =', r2, ', P =', p, sep=' '), cex=1)
     xpos <- 2.2
     ypos <- 5
     mtext("Ping", side=1,font=3, at=xpos+0.3,line=3, cex=0.8, col="black")
@@ -35,12 +35,12 @@ plot_correlation_merged_parental_mping <- function(x, y, title, ...){
     cor <- cor.test(x, y)
     r2 <- round(cor$estimate[[1]], 2)
     p  <- cor$p.value
-    if (p == 0){
-        p = '2.2e-16'
-    }else{
-        p = signif(p, 2) 
-    }
-    text(120, 9, pos=4, paste('R2 =', r2, ', p-value <', p, sep=' '), cex=1)
+    #if (p == 0){
+    #    p = '2.2e-16'
+    #}else{
+    p = signif(p, 2) 
+    #}
+    text(120, 9, pos=4, paste('R =', r2, ', P =', p, sep=' '), cex=1)
     xpos <- 180
     ypos <- 5
     mtext("Parental mPing copy number", side=1,font=1, at=xpos+10,line=3, cex=0.8, col="black")
@@ -61,12 +61,12 @@ plot_correlation <- function(x, y, xlab, ylab, title, ...){
     cor <- cor.test(x, y)
     r2 <- round(cor$estimate[[1]], 2)
     p  <- cor$p.value
-    if (p == 0){
-        p = '2.2e-16'
-    }else{
-        p = signif(p, 2) 
-    }
-    text(0, 130, pos=4, paste('R2 =', r2, ', p-value <', p, sep=' '), cex=1.4)
+    #if (p == 0){
+    #    p = '2.2e-16'
+    #}else{
+    p = signif(p, 2) 
+    #}
+    text(0, 130, pos=4, paste('R =', r2, ', P <', p, sep=' '), cex=1.4)
     xpos <- 2.6
     ypos <- 44
     mtext("Ping", side=1,font=3, at=xpos+0.3,line=3, cex=1.4, col="black")

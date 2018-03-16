@@ -55,7 +55,8 @@ def main():
         #args.ref = '/rhome/cjinfeng/BigData/00.RD/RILs/Transpostion/bin/Compare_RILs_SV/reads_map/input/bwa_0.7/MSU_r7.Pseudo_mPing_RILs.fa'
         #args.ref = '/rhome/cjinfeng/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Preparation/Prepare0_mPing_excision_Pseudogenome/MSU_r7.Pseudo_mPing.fa'
         #args.ref = '/rhome/cjinfeng/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Preparation/Prepare0_mPing_excision_Pseudogenome/MSU_r7.Pseudo_mPing_RILs.fa'
-        args.ref = '/rhome/cjinfeng/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Preparation/Prepare0_mPing_excision_Pseudogenome/MSU_r7.Pseudo_mPing_415.fa'
+        #args.ref = '/rhome/cjinfeng/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Preparation/Prepare0_mPing_excision_Pseudogenome/MSU_r7.Pseudo_mPing_415.fa'
+        args.ref = '/rhome/cjinfeng/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Preparation/Prepare0_mPing_excision_Pseudogenome/Parent.Pseudo_mPing.Ref_Shared.fa'
     fqs = glob.glob('%s/RIL*/*_1.fq' %(args.input))
     ofile = open('RIL_bwa.sh', 'w')
     for fq1 in sorted(fqs):
@@ -68,7 +69,7 @@ def main():
             print >> ofile, cmd
     ofile.close()
     
-    runjob('RIL_bwa.sh', 1)
+    #runjob('RIL_bwa.sh', 1)
 if __name__ == '__main__':
     main()
 

@@ -18,6 +18,27 @@ python Clean_Calls.py --gff RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.Co
 #python Unique_mPing_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.gff --reference HEG4.P.RelocaTE2.mping.non-ref.AF0.1.gff --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt
 cp ../Prepare0_HEG4_mPing/HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff
 python Unique_mPing_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.gff --reference HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt
+#use HEG4 and NB mPing as reference mPing: HEG4_NB_ALL.mPing.gff
+#python Unique_mPing_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.ALL_and_Shared.gff --reference HEG4_NB_ALL.mPing.gff --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt
+#NB, cat HEG4.mping.ref_only.gff HEG4.mping.shared.gff > HEG4.mping.466.gff
+python Unique_mPing_clean_NB.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.clean.gff --reference HEG4.mping.466.gff
+ln -s RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.clean.overlap_ref_NB RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.overlap_ref_NB
+ln -s RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.clean.overlap_ref_ril RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.overlap_ref_ril
+
+#numbers
+#non-reference mPing: 80109 mpings or 16865 mping loci 
+wc -l RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.ALL.clean.gff
+awk '{print $1":"$4"-"$5}' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.ALL.clean.gff | sort | uniq | wc -l
+#reference or shared mPing: 7345 mpings or 51 mping loci
+grep -v "23521641" RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.gff > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.clean.gff
+wc -l RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.clean.gff
+awk '{print $1":"$4"-"$5}' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.clean.gff | sort | uniq | wc -l
+#total: 87454 mping or 16916 mping loci
+cat RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.ALL.clean.gff RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.clean.gff > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.ALL_and_Shared.clean.gff
+awk '{print $1"-"$4"-"$5}' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.ALL_and_Shared.clean.gff| sort | uniq | wc -l
+ln -s RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.ALL_and_Shared.clean.gff RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.ALL_and_Shared.gff
+#HEG4_NB all mPing: 466=415+51
+cat HEG4.2.3.RelocaTE2.mping.non-ref.AF0.1.gff HEG4.mping.ref_only.gff HEG4.mping.shared.gff > HEG4_NB_ALL.mPing.gff
 
 #analyze shared mPing with HEG4 or in the RILs and unique mPing in each RILs
 #generate summary table for shared and unique mPing in each RIL
@@ -26,7 +47,16 @@ python Sum_unique_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_Reloc
 #merge shared_unique_table with Ping code
 python MergePingCode.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.txt
 #generate *.class.summary which have summary of mPing in parental/shared/unique and hom/het/som
+ln -s RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.ALL_and_Shared.clean.gff RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.ALL_and_Shared.gff
 python Sum_class_clean.py --input RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.unique_mPing.gff
+
+#12675 mping or 1915 mping loci
+awk '{print $1":"$4"-"$5}' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_nonparental.gff | sort | uniq | wc -l
+#60244 mping or 466 mping loci
+awk '{print $1":"$4"-"$5}' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.shared_parental.gff | sort | uniq | wc -l
+#14535 uniq mping
+wc -l RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.unique_mPing.gff
+
 #generate *.type.summary which have summary of hom/het/som for unique mPing
 python Sum_type_clean.py --prefix RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean
 #generate unique hom/het mPing number according to different copy number Ping
@@ -41,6 +71,13 @@ python Sum_Ping_mPing_High_depth.py --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_co
 python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output high_depth
 python Sum_Ping_mPing_High_depth.py --code RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt --output RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.high_narrow --narrow
 python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output high_narrow --narrow
+#add ref_only and shared mPing
+paste RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.Shared.ref_shared.table.txt | cut -f1-10,12- > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.Ref_mPing.txt
+grep -v "Sample" RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.Ref_mPing.txt | awk '{print $2+$11}' | perl ~/BigData/software/bin/numberStat.pl
+#mean=221, -10%=199 and +10%=243 
+awk '$2>=199 && $2<=243' RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.Ref_mPing.txt > RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.Ref_mPing.narrow_range.txt
+python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.Ref_mPing.txt --output high_depth
+python Sum_Ping_mPing_High_depth_table.py --table RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.Ref_mPing.txt --output high_narrow --narrow
 
 
 echo "Fig1a"
@@ -121,6 +158,9 @@ python Pseudo_TEinsertion_Genome.py --repeat mPing_Ping_Pong.fa --gff HEG4.ALL.m
 python Pseudo_TEinsertion_Genome.py --repeat mPing_Ping_Pong.fa --gff RIL275_RelocaTEi.CombinedGFF.characterized.AF0.1.gff --genome MSU_r7.fa --project MSU_r7.Pseudo_mPing_RILs
 /opt/linux/centos/7.x/x86_64/pkgs/bwa/0.7.12/bin/bwa index MSU_r7.Pseudo_mPing.fa
 /opt/linux/centos/7.x/x86_64/pkgs/bwa/0.7.12/bin/bwa index MSU_r7.Pseudo_mPing_RILs.fa
+#20180302, Pseudogenome for 51 Reference and Shared mPing in HEG4 and NB
+python Pseudo_TEinsertion_Genome_Ref.py --gff Parent.ALL.mPing.Ref_Shared.gff --genome MSU_r7.fa --project Parent.Pseudo_mPing.Ref_Shared
+
 echo "3.1.3 Mapping reads to pseudogenome"
 cd Prepare0_mPing_excision_Identification/bin
 python runRIL_bwa.py --input ../input/RILs_ALL_unmapped_mping_fastq > log 2>&1 &
@@ -135,6 +175,17 @@ mv *.dupli ../input/RILs_ALL_unmapped_mping_bam_HEG4_mPing/
 mv *.bam ../input/RILs_ALL_unmapped_mping_bam_RILs_mPing/
 mv *.bai ../input/RILs_ALL_unmapped_mping_bam_RILs_mPing/
 mv *.dupli ../input/RILs_ALL_unmapped_mping_bam_RILs_mPing/
+#20180303, mapped to Pseudogenome
+python runRIL_bwa.py --input ../input/RILs_ALL_unmapped_mping_fastq > log 2>&1 &
+#perl /rhome/cjinfeng/BigData/software/bin/qsub-slurm.pl --maxjob 30 --lines 1 --interval 120 --task 12 --mem 20G --time 100:00:00 --convert no RIL_bwa.sh > log1 2>&1 &
+perl /rhome/cjinfeng/BigData/software/bin/qsub-slurm.pl --maxjob 10 --queue intel --lines 1 --interval 120 --task 12 --mem 20G --time 100:00:00 --convert no RIL_bwa_1_100.sh > log1 2>&1 &
+perl /rhome/cjinfeng/BigData/software/bin/qsub-slurm.pl --maxjob 10 --queue batch  --lines 1 --interval 120 --task 12 --mem 20G --time 100:00:00 --convert no RIL_bwa_101_199.sh > log2 2>&1 &
+perl /rhome/cjinfeng/BigData/software/bin/qsub-slurm.pl --maxjob 10 --queue stajichlab --lines 1 --interval 120 --task 12 --mem 20G --time 100:00:00 --convert no RIL_bwa_200_272.sh > log3 2>&1 &
+
+mkdir ../input/RILs_ALL_unmapped_mping_bam_Ref_mPing
+mv *.bam ../input/RILs_ALL_unmapped_mping_bam_Ref_mPing/
+mv *.bai ../input/RILs_ALL_unmapped_mping_bam_Ref_mPing/
+mv *.dupli ../input/RILs_ALL_unmapped_mping_bam_Ref_mPing/
 
 echo "3.1.4 summary mping boundary coverage"
 cd Prepare0_mPing_excision_Identification/bin
@@ -209,6 +260,10 @@ mkdir Figure4_high_exicision_ping_cor
 python Excision_Number_Ping.py --excision Excision_newpipe_version1.footprint.list.noPing.rils.txt --ping RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.narrow_range.txt --output RIL272.RIL_mPing_Ping_Excision.narrow_range.table.txt
 python Excision_Number_Ping.py --excision Excision_newpipe_version1.footprint.list.noPing.rils.txt --ping RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.txt --output RIL272.RIL_mPing_Ping_Excision.table.txt
 cat ping_number_clean_excision_cor_plot.R | R --slave
+#add Ref_only and shared mPing
+python Excision_Number_Ping_AddRefmPing.py --excision Excision_newpipe_version1.footprint.list.noPing.rils.txt --ping RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.Ref_mPing.narrow_range.txt --output RIL272.RIL_mPing_Ping_Excision.Ref_mPing.narrow_range.table.txt
+python Excision_Number_Ping_AddRefmPing.py --excision Excision_newpipe_version1.footprint.list.noPing.rils.txt --ping RILs_ALL_fastq_correct_merged_duplicate_RelocaTEi.CombinedGFF.characterized.clean.mping.shared_unique_table.ping_code.Ref_mPing.txt --output RIL272.RIL_mPing_Ping_Excision.Ref_mPing.table.txt
+cat ping_number_clean_excision_cor_plot_AddRefmPing.R | R --slave
 
 echo "3.8" High excision associated genes
 mkdir Prepare0_mPing_excision_genes

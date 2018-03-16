@@ -13,14 +13,13 @@ import random
 def usage():
     test="name"
     message='''
-python ../../bin/Pseudo_TEinsertion_Genome.py --repeat mPing_Ping_Pong.fa --gff HEG4.ALL.mping.non-ref.gff --genome MSU_r7.fa
+python Pseudo_TEinsertion_Genome_Ref.py --gff Parent.ALL.mPing.Ref_Shared.gff --genome MSU_r7.fa
 
---repeat: fasta file contains sequence of TEs in gff file (no need to have TSD=... after sequence name).
---gff:    gff file contains location of non_reference TE insertions in reference genome. TE=name;TSD=TAA; must present in gff, so we know which TE to insert and the length of TSD.
+--gff:    gff file contains location of reference TE insertions in reference genome.
 --genome: reference genome sequence
 --project: prefix of output files
 
-The script make a pseudogenome by inserting non_reference TEs into reference chromosome. A new gff will be generated which contains the locations of TEs in pseudogenome. The new pseudogenome can be used to analyzing DNA methylation and histone modification of TEs and flanking regions.
+The script make a pseudogenome by removing reference TEs from reference chromosome. A new gff will be generated which contains the locations of TEs in pseudogenome.
     '''
     print message
 
@@ -87,15 +86,15 @@ def update_pos(data):
         start = data[i][1]
         end   = data[i][2]
         repid = data[i][4] 
-        repseq= data[i][5]
         reptsd= data[i][6]
-        add_len = len(repseq) + 1*len(reptsd)
+        replen= end - start + 1
+        add_len = replen + 1*len(reptsd)
         
         #print chrn, start, end, repid, repseq, reptsd
         if add_total.has_key(chrn):
-            # add previous insertion length to the coordinate
-            data[i][1] = start + add_total[chrn]
-            data[i][2] = end   + add_total[chrn]
+            # add or remove previous insertion length to the coordinate
+            data[i][1] = start - add_total[chrn]
+            data[i][2] = end   - add_total[chrn]
             add_total[chrn] += add_len
         else:
             # first insertion, no change to the coordinate
@@ -103,7 +102,43 @@ def update_pos(data):
         #print data[i][0], data[i][1], data[i][2]
     return data
 
-##insertion element into genome
+##remove element from genome
+def remove_element(pos, ref, ofile):
+    chrn = pos[0]
+    chrseq = ref[chrn]
+    half1 = chrseq[:(pos[1]-1-len(pos[6]))]
+    half2 = chrseq[pos[2]:]
+    print 'mPing: %s:%s' %(chrn, pos[1])
+    print '1th half: %s' %(half1[(len(half1)-50):])
+    #print '1th half: %s' %(half1[(len(half1)-10):])
+    print '2th half: %s' %(half2[:50])
+    repid =pos[4]
+    repname=pos[5]
+    reptsd =pos[6]
+    #repname=pos[7]
+    #repend =int(pos[1]) + len(repseq) + 1*len(reptsd) - 1
+    repend =int(pos[1])-1-len(reptsd)+1+len(reptsd)-1
+    #print 'insert: %s, %s' %(reptsd, repseq)
+    #Chr1    not.give        transposable_element_attribute  1132975 1132977 -       .       .       ID=Chr1.1132977.spanners;avg_flankers=17;spanners=0;type=homozygous;TE=mping;TSD=TAA
+    #gff_newline = '%s\tPseudoGenome\tTransposable_element\t%s\t%s\t%s\t.\t.\tID=%s_%s_%s;Original_ID=%s;TE=%s;TSD=%s;' %(chrn, pos[1]+len(reptsd), repend, pos[3], chrn, pos[1]+len(reptsd), repend, repid, repname, reptsd)
+    gff_newline = '%s\tPseudoGenome\tTransposable_element\t%s\t%s\t%s\t.\t.\tID=%s_%s_%s;Original_ID=%s;TE=%s;TSD=%s;' %(chrn, pos[1]-1-len(reptsd)+1, repend, pos[3], chrn, pos[1]-1-len(reptsd)+1, repend, repid, repname, chrseq[pos[2]:pos[2]+2])
+    print >> ofile, gff_newline
+    ##we choose sequence at target site as tsd, not use tsd provided
+    tsdstart = pos[1] - len(reptsd)
+    tsdseq   = chrseq[tsdstart:pos[1]]
+    newseq   = half1 + half2
+    #if pos[3] == '+':
+    #    newseq = half1 + repseq + tsdseq + half2
+    #    #print tsdseq, repseq
+    #else:
+    #    repseq_seq = Seq(repseq)
+    #    repseq_rec = repseq_seq.reverse_complement()
+    #    #print tsdseq, str(repseq_rec)
+    #    newseq = half1 + str(repseq_rec) + tsdseq + half2
+    ref[chrn] = newseq
+
+
+##insert element into genome
 def insert_element(pos, ref, ofile):
     chrn = pos[0]
     chrseq = ref[chrn]
@@ -152,7 +187,7 @@ def gff_parser(infile):
                         idx, value = re.split(r'\=', attr)
                         temp[idx] = value
                 repid   = temp['ID'] if temp.has_key('ID') else '%s_%s_%s' %(chro, start, end)
-                repname = temp['TE']
+                repname = temp['TE_Name']
                 reptsd  = temp['TSD'] if temp.has_key('TSD') else 'TAA'
                 #repfam  = temp['Class']
                 data[chro].append([start, end, strand, repid, repname, reptsd, unit[8]])
@@ -186,12 +221,12 @@ def pick_te(element, te):
     return te_inf
 
 ##main function of simulation
-def simulate(ref, element, gff, prefix):
+def simulate(ref, gff, prefix):
     data = []
     for chro in sorted(gff.keys()): 
         for ins in sorted(gff[chro]):
             #print chro, ins[0], ins[1], ins[2], ins[3], ins[4], element[ins[4]], ins[5]
-            data.append([chro, ins[0], ins[1], ins[2], ins[3], element[ins[4]], ins[5], ins[4]])
+            data.append([chro, ins[0], ins[1], ins[2], ins[3], ins[4], ins[5]])
     data = sorted(data, key = lambda x: (x[0], x[1]))
 
     ###update insertion to new pseudogenome position
@@ -203,21 +238,20 @@ def simulate(ref, element, gff, prefix):
     ###insert TE into reference genome
     ofile = open(gff_out, 'w')
     for pos in datac:
-        insert_element(pos, ref, ofile)
+        remove_element(pos, ref, ofile)
     ofile.close()
     write_fasta(ref, genome_out)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-r', '--repeat')
     parser.add_argument('--genome')
     parser.add_argument('--gff')
     parser.add_argument('-p', '--project')
     parser.add_argument('-v', dest='verbose', action='store_true')
     args = parser.parse_args()
     try:
-        len(args.repeat) > 0 or len(args.genome) > 0 or len(args.gff) > 0
+        len(args.genome) > 0 or len(args.gff) > 0
     except:
         usage()
         sys.exit(2)
@@ -230,9 +264,8 @@ def main():
     print pseudogff
 
     ref    = fasta_ref(args.genome)
-    repeat = fasta_ref(args.repeat)
     gff    = gff_parser(args.gff)
-    simulate(ref, repeat, gff, args.project)
+    simulate(ref, gff, args.project)
 
 if __name__ == '__main__':
     main()
