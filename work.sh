@@ -201,6 +201,17 @@ python mPing_Boundary_Coverage.py --bam_ref ../input/RILs_ALL_bam_correct_merged
 python Ping_number_RILs.High_exicison.py --csv mPing_boundary_mPing --ping_code ../../Prepare0_mPing_calls/RIL275_RelocaTE.sofia.ping_code.table
 #summary excision from csv
 python Sum_excision_distance.py --dir mPing_boundary_mPing_GT_Ping_code --distance ../../Prepare0_mPing_distance/mPing_dist2.50Mb.list.sorted --blacklist Bam.Core.blacklist --project mPing_boundary.linked_50Mb_debug2 > log 2>&1 &
+
+#51 Ref and Shared mPing, 20180316
+python mPing_Boundary_Coverage_Ref.py --bam_ref ../input/RILs_ALL_unmapped_mping_bam_Ref_mPing/ --bam_pseudo ../input/RILs_ALL_bam_correct_merged/ --gff_ref ../input/Parent.Pseudo_mPing.Ref_Shared.gff --gff_pseudo ../input/Parent.ALL.mPing.Ref_Shared.gff > log 2>&1 &
+python Ping_number_RILs.High_exicison_Ref.py --csv mPing_boundary_mPing --ping_code ../../Prepare0_mPing_calls/RIL272_RelocaTEi.Jinfeng_Lulu.ping_code.table.txt
+
+#merge 415 non_ref and 51 ref_shared
+cp mPing_boundary_51_ref_mPing_GT_Ping_code mPing_boundary_mPing_GT_Ping_code
+cp -R mPing_boundary_415_nonref_mPing_GT_Ping_code mPing_boundary_mPing_GT_Ping_code
+python Sum_excision_distance.py --dir mPing_boundary_mPing_GT_Ping_code --distance ../../Prepare0_mPing_distance/mPing_dist2.50Mb.list.sorted --blacklist Bam.Core.blacklist --project mPing_boundary.linked_50Mb_debug2 > log 2>&1 &
+
+
 echo "3.2 Footprint"
 mkdir Prepare0_mPing_excision_footprint
 cd Prepare0_mPing_excision_footprint
@@ -211,7 +222,8 @@ python footprint_events.py --input ../../Prepare0_mPing_excision_Identification/
 awk '$2>=5' Excision_newpipe_version1.footprint.list.txt > Excision_newpipe_version1.footprint.high.txt
 cp Excision_newpipe_version1.footprint.list.txt Excision_newpipe_version1.footprint.list.noPing.txt
 echo "summary excision number"
-python sum_excision.py --input Excision_newpipe_version1.footprint.list.noPing.txt
+python sum_excision.py --input Excision_newpipe_version1.footprint.list.noPing.txt > Excision_newpipe_version1.footprint.list.noPing.summary
+python sum_excision_Table_S.py --input Excision_newpipe_version1.footprint.list.noPing.txt
 
 echo "3.3 Excision frequency plot"
 cd Figure4_high_exicision_loci

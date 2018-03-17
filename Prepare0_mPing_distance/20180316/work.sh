@@ -9,9 +9,3 @@ perl mPing_dist_ref.pl --input HEG4.NB_mPing.gff | grep "ref_only" | sort -k1,1 
 echo "Shared: use distance either in HEG4 or Nipponbare whoever is short, because they present in both"
 perl mPing_dist_ref.pl --input HEG4_NB.mPing.gff | grep "share" | sort -k1,1n -k2,2n > Distance.Shared.txt
 
-
-echo "HEG4 and NB 466 mPing"
-ln -s ~/BigData/00.RD/RILs/Transpostion/bin/Manuscript_Preparation/Prepare0_mPing_calls/HEG4_NB_ALL.mPing.gff ./
-perl mPing_dist.pl --input HEG4_NB_ALL.mPing.gff
-sort -k3,3n -k1,1n -k2,2n mPing_dist2.50Mb.list | uniq > mPing_dist2.50Mb.list.sorted
-

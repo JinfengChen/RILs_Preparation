@@ -23,29 +23,9 @@
 #update 20160229
 #P=342/(413*(272/2)*2)=0.0030
 #p-value=6.311e-05
-#binom.test(5, 136, p=0.0030)
+binom.test(5, 136, p=0.0030)
 #p-value=0.0008
-#binom.test(4, 136, p=0.0030)
-
-#update 20180316
-#https://en.wikipedia.org/wiki/Binomial_test#Large_samples
-#P=344/(466*(272/2)*2)=0.0027 #diploid
-#P=344/(466*(272/2))=0.0054   #haploid
-#p-value=0.0009201 or 9.2e-04
-binom.test(5, 136, p=0.0054)
-#p-value=0.006593  or 6.6e-03
-binom.test(4, 136, p=0.0054)
-binom.test(3, 136, p=0.0054)
-binom.test(2, 136, p=0.0054)
-binom.test(1, 136, p=0.0054)
-
-#p-value=3.85e-05
-binom.test(5, 136, p=0.0027)
-#p-value=0.0005456 or 5.4e-04
-binom.test(4, 136, p=0.0027)
-binom.test(3, 136, p=0.0027)
-binom.test(2, 136, p=0.0027)
-binom.test(1, 136, p=0.0027)
+binom.test(4, 136, p=0.0030)
 
 #the rate is excision per locus per plant.
 #the test is for the given rate, what the the chance of one mPing can have more than 5 excision events, which also mean in 5 rils.

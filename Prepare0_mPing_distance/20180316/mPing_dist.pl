@@ -27,7 +27,6 @@ sub readtable
 my ($file)=@_;
 my %hash;
 my %strand;
-my %loci;
 open IN, "$file" or die "$!";
 while(<IN>){
     chomp $_;
@@ -35,7 +34,6 @@ while(<IN>){
     my @unit=split("\t",$_);
     push @{$hash{$unit[0]}}, $unit[3];
     $strand{"$unit[0]\.$unit[3]"} = $unit[5];
-    $loci{"$unit[0]\.$unit[3]"}   = "$unit[0]\.$unit[3]\.$unit[4]"
 }
 close IN;
 
@@ -53,7 +51,7 @@ foreach my $c (keys %hash){
     if ($dist_first <= $cutoff){
         my $mping1 = "$c\.$pos[0]";
         my $mping2 = "$c\.$pos[1]";
-        print OUT2 "$mping1\t$mping2\t$dist_first\t$strand{$mping1}\t$strand{$mping2}\t$loci{$mping1}\t$loci{$mping2}\n";
+        print OUT2 "$mping1\t$mping2\t$dist_first\t$strand{$mping1}\t$strand{$mping2}\n";
     }
     for (my $i=1; $i<@pos-1; $i++){
         my $dist1 = $pos[$i+1] - $pos[$i];
@@ -64,7 +62,7 @@ foreach my $c (keys %hash){
             if ($dist <= $cutoff){
                 my $mping1 = "$c\.$pos[$i]";
                 my $mping2 = "$c\.$pos[$i+1]";
-                print OUT2 "$mping1\t$mping2\t$dist\t$strand{$mping1}\t$strand{$mping2}\t$loci{$mping1}\t$loci{$mping2}\n";
+                print OUT2 "$mping1\t$mping2\t$dist\t$strand{$mping1}\t$strand{$mping2}\n";
             }
         #}elsif($dist1 > $dist2){
         }else{
@@ -73,7 +71,7 @@ foreach my $c (keys %hash){
             if ($dist <= $cutoff){
                 my $mping1 = "$c\.$pos[$i-1]";
                 my $mping2 = "$c\.$pos[$i]";
-                print OUT2 "$mping1\t$mping2\t$dist\t$strand{$mping1}\t$strand{$mping2}\t$loci{$mping1}\t$loci{$mping2}\n";
+                print OUT2 "$mping1\t$mping2\t$dist\t$strand{$mping1}\t$strand{$mping2}\n";
             }
         }
         #my $dist  = $dist1 < $dist2 ? $dist1 : $dist2;
@@ -89,7 +87,7 @@ foreach my $c (keys %hash){
     if ($dist_last <= $cutoff){
         my $mping1 = "$c\.$pos[@pos-2]";
         my $mping2 = "$c\.$pos[@pos-1]";
-        print OUT2 "$mping1\t$mping2\t$dist_last\t$strand{$mping1}\t$strand{$mping2}\t$loci{$mping1}\t$loci{$mping2}\n";
+        print OUT2 "$mping1\t$mping2\t$dist_last\t$strand{$mping1}\t$strand{$mping2}\n";
     }
 }
 close OUT1;

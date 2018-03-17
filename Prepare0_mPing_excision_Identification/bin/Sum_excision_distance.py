@@ -153,6 +153,7 @@ def summary(directory, mpings, prefix, blacklist):
                 excision += 1
                 ril = re.sub(r'RIL', r'', ril)
                 rils.append('RIL%s' %(ril))
+        print mping
         mping_temp = re.split('_', mping)
         mping_temp1= '%s:%s-%s' %(mping_temp[0], mping_temp[1], mping_temp[2])
         print >> ofile2, '%s\t%s\t%s' %(mping_temp1, excision, ','.join(rils))
@@ -185,10 +186,12 @@ def readtable(infile):
             line = line.rstrip()
             if len(line) > 2: 
                 unit = re.split(r'\t',line)
-                mping1 = re.split(r'\.', unit[0])
-                mping2 = re.split(r'\.', unit[1])
-                mping1_idx = '%s_%s_%s' %(mping1[0], mping1[1], str(int(mping1[1]) + 2))
-                mping2_idx = '%s_%s_%s' %(mping2[0], mping2[1], str(int(mping2[1]) + 2))
+                mping1 = re.split(r'\.', unit[5])
+                mping2 = re.split(r'\.', unit[6])
+                mping1_idx = '%s_%s_%s' %(mping1[0], mping1[1], mping1[2])
+                mping2_idx = '%s_%s_%s' %(mping2[0], mping2[1], mping2[2])
+                #mping1_idx = '%s_%s_%s' %(mping1[0], mping1[1], str(int(mping1[1]) + 2))
+                #mping2_idx = '%s_%s_%s' %(mping2[0], mping2[1], str(int(mping2[1]) + 2))
                 #mping1_idx = '%s_%s_%s' %(mping1[0], str(int(mping1[1]) + 2), mping1[1])
                 #mping2_idx = '%s_%s_%s' %(mping2[0], str(int(mping2[1]) + 2), mping2[1])
                 #if data.has_key(mping1_idx):
